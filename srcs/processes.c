@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 11:48:25 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/09 16:25:57 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/09 16:58:35 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,44 +16,57 @@
 
 #include "pipex.h"
 
-void	first_child(int *fd, char **cmd, char *infile, char **env)
+void first_child(int *fd, char **cmd, char *infile, char **env)
 {
-	int		in_fd;
-	char	*path;
+    int in_fd;
+    char *path;
 
-	//here I need to WRITE the output in the pipe & to READ from infile
-	close(fd[0]); //fd[0] is to read
-	in_fd = open(infile, O_RDONLY);
-	printf("before all is good\n");
-	dup2(in_fd, STDIN_FILENO);
-	if (dup2(fd[1], STDOUT_FILENO) == -1)
-	{
-		perror("here is the mistake\n");
-		exit(1);
-	}
-	printf("Until here all good 2\n");
-	path = handle_cmd(cmd[0]);
-	printf("Same bro\n");
-	execve(path, cmd, env);
-	close(fd[1]); //fd[1] is to write->but I need this to write in it with execve? this will not be applied ?
+    close(fd[0]);  // Close the reading side of the pipe in the first child
+    in_fd = open(infile, O_RDONLY);
+    if (in_fd == -1) {
+        perror("Error opening infile");
+        exit(1);
+    }
+    printf("%d, STDIN_FILENO is %d\n", in_fd, STDIN_FILENO);
+    dup2(in_fd, STDIN_FILENO);
+    if (dup2(fd[1], STDOUT_FILENO) == -1) {
+        perror("Error with dup2 for stdout");
+        exit(1);
+    }
+    printf("Until here all good 2\n");
+    path = handle_cmd(cmd[0]);
+    printf("Same bro\n");
+
+    execve(path, cmd, env);
+    // If execve fails, print error
+    perror("Execve failed in first child");
+    exit(1);
 }
 
-void	sec_child(int *fd, char **cmd, char *outfile, char **env)
+void sec_child(int *fd, char **cmd, char *outfile, char **env)
 {
-	int		out_fd;
-	char	*path;
-	//here I need to READ from the pipe & to WRITE to outfile
-	close(fd[1]);
-	dup2(fd[0], STDIN_FILENO);
-	out_fd = open(outfile, O_WRONLY);
-	printf("I guess it is stuck here too?\n");
-	dup2(out_fd, STDOUT_FILENO);
-	printf("never gonna print until debug\n");
-	path = handle_cmd(cmd[0]);
-	printf("I'm going to get killed\n");
-	execve(path, cmd, env);
-	close(fd[0]); //but I need this open to read from it with execve? this will not be applied ?
+    int out_fd;
+    char *path;
+
+    close(fd[1]);  // Close the writing side of the pipe in the second child
+    dup2(fd[0], STDIN_FILENO);
+    out_fd = open(outfile, O_WRONLY);
+    if (out_fd == -1) {
+        perror("Error opening outfile");
+        exit(1);
+    }
+    printf("I guess it is stuck here too?\n");
+    dup2(out_fd, STDOUT_FILENO);
+    printf("never gonna print until debug\n");
+    path = handle_cmd(cmd[0]);
+    printf("I'm going to get killed\n");
+
+    execve(path, cmd, env);
+    // If execve fails, print error
+    perror("Execve failed in second child");
+    exit(1);
 }
+
 
 void	free_close(int *fd, char ***cmds)
 {

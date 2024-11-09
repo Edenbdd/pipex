@@ -1,7 +1,5 @@
-never gonna print until debug
-I'm going to get killed
-Until here all good 2
-Same bro
+Executing command in second child: /bin/cat
+Executing command in first child: /bin/cat
 Hello
 World
 Test Pipex

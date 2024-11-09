@@ -6,12 +6,12 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 09:12:10 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/09 11:48:31 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/09 16:56:52 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
-#include "libft.h"
+#include "../includes/libft.h"
 
 char ***get_cmds(char **argv, int argc)
 {

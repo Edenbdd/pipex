@@ -36,10 +36,12 @@ static void	print_cmd(char ***cmds) //just for debug, delete/command at the end
 
 int	main(int argc, char **argv, char **env)
 {
-	(void)env;
 	char	***cmds;
 	int		id;
+	//int		id2;
 	int		fd[2];
+	int		status;
+	//int		status2;
 	//THIS IS PARSING
 	if (argc != 5) //for bonus only check that it is >= 5
 	{
@@ -57,18 +59,22 @@ int	main(int argc, char **argv, char **env)
 		printf("first born\n");
 		first_child(fd, cmds[0], argv[1], env); //make cmds dynamique in Bonus
 	}
-	wait(NULL); //voir de plus pret comment utiliser waitpid at some point
+	waitpid(id, &status, 0); //voir de plus pret comment utiliser waitpid at some point
+	printf("stauts 1 is %d\n", status);
 	if (id != 0)
 		printf("parent stoped waiting\n");
-	id = fork(); //using the same id bcs first child is dead when the second one is born
-	if (id == 0) //second child
+	/*
+	id2 = fork(); //using the same id bcs first child is dead when the second one is born
+	if (id2 == 0) //second child
 	{
 		printf("second born\n");
 		sec_child(fd, cmds[1], argv[argc - 1], env);
 	}
-	wait(NULL); //change into waitpid
+	waitpid(id2, &status2, 0); //change into waitpid
+	printf("stauts 2 is %d\n", status2);
 		if (id != 0)
 		printf("parent stoped waiting again\n");
+	*/
 	if (id != 0)
 		free_close(fd, cmds);
 	return (0);
