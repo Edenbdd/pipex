@@ -1,42 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tutorial.c                                         :+:      :+:    :+:   */
+/*   ft_putendl_fd.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/07 15:46:07 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/07 17:55:33 by aubertra         ###   ########.fr       */
+/*   Created: 2024/01/17 15:08:48 by aubertra          #+#    #+#             */
+/*   Updated: 2024/03/07 13:11:11 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <stdio.h>
-#include <sys/wait.h>
+#include "libft.h"
 
-int	main(int argc, char **argv, char **env)
+void	ft_putendl_fd(char *s, int fd)
 {
-	(void)argc,
-	(void)argv;
-	(void)env;
-	int	id;
-	int	n;
 	int	i;
 
-	id = fork();
-	printf("%d\n", id);
-	if (id == 0)
-		n = 1;
-	if (id != 0)
+	if (!s)
+		return ;
+	i = 0;
+	while (s[i])
 	{
-		n = 6;
-		wait(NULL);
-	}
-	i = n;
-	while (i < n + 5)
-	{
-		printf("%d\n", i);
+		write(fd, &s[i], 1);
 		i++;
 	}
+	write(fd, "\n", 1);
+}
+
+/*
+int	main(void)
+{
+	ft_putendl_fd("je m'appelle Enzo", 1);
 	return (0);
 }
+*/
