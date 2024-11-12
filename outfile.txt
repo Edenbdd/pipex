@@ -1,5 +1,4 @@
-Executing command in second child: /bin/cat
-Executing command in first child: /bin/cat
 Hello
 World
 Test Pipex
+'\0'

@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 11:48:25 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/09 16:58:35 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/12 12:45:15 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,55 +18,51 @@
 
 void first_child(int *fd, char **cmd, char *infile, char **env)
 {
-    int in_fd;
-    char *path;
+ 	char	*path;
+	int		in_fd;
 
-    close(fd[0]);  // Close the reading side of the pipe in the first child
+	close(fd[0]);
     in_fd = open(infile, O_RDONLY);
-    if (in_fd == -1) {
-        perror("Error opening infile");
+    if (in_fd == -1)
+    {
+		perror("open infile");
         exit(1);
     }
-    printf("%d, STDIN_FILENO is %d\n", in_fd, STDIN_FILENO);
     dup2(in_fd, STDIN_FILENO);
-    if (dup2(fd[1], STDOUT_FILENO) == -1) {
-        perror("Error with dup2 for stdout");
+    close(in_fd);
+    dup2(fd[1], STDOUT_FILENO);
+    close(fd[1]);
+	path = handle_cmd(cmd[0]);
+    if (execve(path, cmd, env) == -1)
+    {
+        perror("execve 1");
         exit(1);
     }
-    printf("Until here all good 2\n");
-    path = handle_cmd(cmd[0]);
-    printf("Same bro\n");
-
-    execve(path, cmd, env);
-    // If execve fails, print error
-    perror("Execve failed in first child");
-    exit(1);
 }
 
 void sec_child(int *fd, char **cmd, char *outfile, char **env)
 {
-    int out_fd;
-    char *path;
+    char	*path;
+	int		out_fd;
 
-    close(fd[1]);  // Close the writing side of the pipe in the second child
+    close(fd[1]);
     dup2(fd[0], STDIN_FILENO);
-    out_fd = open(outfile, O_WRONLY);
-    if (out_fd == -1) {
-        perror("Error opening outfile");
+    close(fd[0]);
+    out_fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (out_fd == -1)
+    {
+        perror("open outfile");
         exit(1);
     }
-    printf("I guess it is stuck here too?\n");
     dup2(out_fd, STDOUT_FILENO);
-    printf("never gonna print until debug\n");
+    close(out_fd);
     path = handle_cmd(cmd[0]);
-    printf("I'm going to get killed\n");
-
-    execve(path, cmd, env);
-    // If execve fails, print error
-    perror("Execve failed in second child");
-    exit(1);
+    if (execve(path, cmd, env) == -1)
+    {
+        perror("execve 2");
+        exit(1);
+    }
 }
-
 
 void	free_close(int *fd, char ***cmds)
 {

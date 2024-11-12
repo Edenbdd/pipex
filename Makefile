@@ -6,7 +6,7 @@
 #    By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/31 08:40:05 by aubertra          #+#    #+#              #
-#    Updated: 2024/11/09 13:42:24 by aubertra         ###   ########.fr        #
+#    Updated: 2024/11/12 12:46:29 by aubertra         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,6 @@ NAME = pipex
 # Source and object files
 SRCS =  main.c\
 		parsing.c\
-		ft_modified_split.c\
 		processes.c\
 		handle_cmd.c\
 
