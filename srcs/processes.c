@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 11:48:25 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/12 12:45:15 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/12 15:16:36 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,21 +23,13 @@ void first_child(int *fd, char **cmd, char *infile, char **env)
 
 	close(fd[0]);
     in_fd = open(infile, O_RDONLY);
-    if (in_fd == -1)
-    {
-		perror("open infile");
-        exit(1);
-    }
+	error_exit(in_fd, -1, NULL, 1);
     dup2(in_fd, STDIN_FILENO);
     close(in_fd);
     dup2(fd[1], STDOUT_FILENO);
     close(fd[1]);
 	path = handle_cmd(cmd[0]);
-    if (execve(path, cmd, env) == -1)
-    {
-        perror("execve 1");
-        exit(1);
-    }
+    error_exit(execve(path, cmd, env) , -1, NULL, 1);
 }
 
 void sec_child(int *fd, char **cmd, char *outfile, char **env)
@@ -49,19 +41,11 @@ void sec_child(int *fd, char **cmd, char *outfile, char **env)
     dup2(fd[0], STDIN_FILENO);
     close(fd[0]);
     out_fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    if (out_fd == -1)
-    {
-        perror("open outfile");
-        exit(1);
-    }
+	error_exit(out_fd, -1, NULL, 1);
     dup2(out_fd, STDOUT_FILENO);
     close(out_fd);
     path = handle_cmd(cmd[0]);
-    if (execve(path, cmd, env) == -1)
-    {
-        perror("execve 2");
-        exit(1);
-    }
+    error_exit(execve(path, cmd, env) , -1, NULL, 1);
 }
 
 void	free_close(int *fd, char ***cmds)

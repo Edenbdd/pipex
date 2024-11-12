@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:42:26 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/12 12:59:07 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/12 15:16:37 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 //For now only the handle_cmd command, change this later if needed
 // char **env
-#include "../includes/pipex.h"
-#include "../includes/libft.h"
+#include "pipex.h"
+#include "libft.h"
 
 //A COUPER EN DEUX OU TROIS POUR REDUIRE LE NOMBRE DE LIGNE
 char	*handle_cmd(char *cmd)
@@ -27,10 +27,6 @@ char	*handle_cmd(char *cmd)
 	char	*right_path;
 
 	paths = ft_split(getenv("PATH"), ':');
-	if (!paths)
-	{
-		perror("ft_split failed in handle_cmd\n");
-	}
 	i = 0;
 	right_path = NULL;
 	while (paths[i])
@@ -39,8 +35,6 @@ char	*handle_cmd(char *cmd)
 		to_test = ft_strjoin(tmp, cmd);
 		if (access(to_test, F_OK) == 0)
 		{
-			//! avec ce fonctionnement, on return la derniere commande qui fonctionne
-			//contrairement au shell qui return la premiere, jsp si c est important ??
 			if (access(to_test, X_OK) == 0)
 			{
 				if (right_path)
@@ -48,9 +42,7 @@ char	*handle_cmd(char *cmd)
 				right_path = ft_strdup(to_test); // this leaks idk how to solve it
 			}
 			else
-				perror("Permission error\n");
-			//errror handling to change in case two file exists
-			//and only one can be executed 
+				perror(NULL);
 		}
 		free(paths[i]);
 		free(tmp);
@@ -60,10 +52,30 @@ char	*handle_cmd(char *cmd)
 	free(paths);
 	if (!right_path)
 	{
-		perror("Command doesn't exists\n");
-		return (NULL);
+		right_path = absolute_path(cmd);
+		if (!right_path)
+			exit(127);
 	}
 	return (right_path);
+}
+
+char	*absolute_path(char *cmd)
+{
+	if (access(cmd, F_OK) == 0)
+	{
+		if (access(cmd, X_OK) == 0)
+			return (cmd);
+		else
+		{
+			perror(NULL);
+			exit(1);
+		}
+	}
+	else
+	{
+		perror(NULL);
+		exit(1);
+	}
 }
 /* main si besoin de test separement handle_cmd
 int	main(void)

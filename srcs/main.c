@@ -14,7 +14,7 @@
 
 #include "pipex.h"
 #include "libft.h"
-
+/*
 static void	print_cmd(char ***cmds) //just for debug, delete/command at the end
 {
 	int	i;
@@ -33,7 +33,7 @@ static void	print_cmd(char ***cmds) //just for debug, delete/command at the end
 		i++;
 	}
 }
-
+*/
 int main(int argc, char **argv, char **env)
 {
     char    ***cmds;
@@ -41,21 +41,23 @@ int main(int argc, char **argv, char **env)
     int     id2;
     int     fd[2];
 
+	if (!env)
+		env = NULL;
+	//check nb arg
     if (argc != 5)
-    {
-        printf("Nb of arg is not 4\n");
-        return (1);
-    }
-    check_access(argv[1], argv[argc - 1]);
+		{return (1);}
+    //check files
+	check_access(argv[1], argv[argc - 1]);
+	//cmds
     cmds = get_cmds(argv, argc);
-	print_cmd(cmds);
-    error_exit(pipe(fd), -1, "pipe");
+//	print_cmd(cmds); pour debug si besoin
+    error_exit(pipe(fd), -1, NULL, 1);
     id = fork();
-    error_exit(id, -1, "fork 1");
+    error_exit(id, -1, NULL, 1);
     if (id == 0)
 		first_child(fd, cmds[0], argv[1], env);
     id2 = fork();
-	error_exit(id, -1, "fork 2");
+	error_exit(id, -1, NULL, 1);
     if (id2 == 0)
 		sec_child(fd, cmds[1], argv[argc - 1], env);
 	free_close(fd, cmds);
