@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 11:48:25 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/12 15:16:36 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/12 17:08:23 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,36 +16,36 @@
 
 #include "pipex.h"
 
-void first_child(int *fd, char **cmd, char *infile, char **env)
+void first_child(int *fd, char ***cmds, char *infile, char **env)
 {
  	char	*path;
 	int		in_fd;
 
-	close(fd[0]);
     in_fd = open(infile, O_RDONLY);
-	error_exit(in_fd, -1, NULL, 1);
+	error_exit(in_fd, -1, NULL, 1 , fd, cmds);
     dup2(in_fd, STDIN_FILENO);
     close(in_fd);
-    dup2(fd[1], STDOUT_FILENO);
-    close(fd[1]);
-	path = handle_cmd(cmd[0]);
-    error_exit(execve(path, cmd, env) , -1, NULL, 1);
+	dup2(fd[1], STDOUT_FILENO);
+	path = handle_cmd(cmds[0][0], env, cmds, fd);
+	close(fd[0]);
+	close(fd[1]);
+    error_exit(execve(path, cmds[0], env) , -1, NULL, 1, fd, cmds);
 }
 
-void sec_child(int *fd, char **cmd, char *outfile, char **env)
+void sec_child(int *fd, char ***cmds, char *outfile, char **env)
 {
     char	*path;
 	int		out_fd;
 
-    close(fd[1]);
     dup2(fd[0], STDIN_FILENO);
-    close(fd[0]);
     out_fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	error_exit(out_fd, -1, NULL, 1);
+	error_exit(out_fd, -1, NULL, 1, fd, cmds);
     dup2(out_fd, STDOUT_FILENO);
     close(out_fd);
-    path = handle_cmd(cmd[0]);
-    error_exit(execve(path, cmd, env) , -1, NULL, 1);
+    path = handle_cmd(cmds[1][0], env, cmds, fd);
+	close(fd[1]);
+	close(fd[0]);
+    error_exit(execve(path, cmds[1], env) , -1, NULL, 1, fd, cmds);
 }
 
 void	free_close(int *fd, char ***cmds)
@@ -53,9 +53,16 @@ void	free_close(int *fd, char ***cmds)
 	int	i;
 	int	j;
 
+	printf("Free_close has been called and will execute \n");
 	i = 0;
-	close(fd[1]);
-	close(fd[0]);
+	if (fd)
+	{
+		printf("I come here\n");
+		if (fd[0])
+			close(fd[1]);
+		if(fd[0])	
+			close(fd[0]);
+	}
 	while (cmds[i])
 	{
 		j = 0;

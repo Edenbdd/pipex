@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:42:26 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/12 15:16:37 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/12 17:10:09 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include "libft.h"
 
 //A COUPER EN DEUX OU TROIS POUR REDUIRE LE NOMBRE DE LIGNE
-char	*handle_cmd(char *cmd)
+char	*handle_cmd(char *cmd, char **env, char ***cmds, int *fd)
 {
 	char	**paths;
 	int		i;
@@ -26,6 +26,11 @@ char	*handle_cmd(char *cmd)
 	char	*to_test;
 	char	*right_path;
 
+	if (!env)
+	{
+		right_path = absolute_path(cmd, fd, cmds);
+		return (right_path);
+	}		
 	paths = ft_split(getenv("PATH"), ':');
 	i = 0;
 	right_path = NULL;
@@ -50,16 +55,23 @@ char	*handle_cmd(char *cmd)
 		i++;
 	}
 	free(paths);
+	printf("right path before  %s\n", right_path);
 	if (!right_path)
 	{
-		right_path = absolute_path(cmd);
+		right_path = absolute_path(cmd, fd, cmds);
+		printf("I come here\n");
 		if (!right_path)
+		{
+			printf("I willl exist through here !\n");
+			free_close(fd, cmds);
 			exit(127);
+		}
 	}
+	printf("right path after %s\n", right_path);
 	return (right_path);
 }
 
-char	*absolute_path(char *cmd)
+char	*absolute_path(char *cmd, int *fd, char ***cmds)
 {
 	if (access(cmd, F_OK) == 0)
 	{
@@ -67,13 +79,16 @@ char	*absolute_path(char *cmd)
 			return (cmd);
 		else
 		{
-			perror(NULL);
+			free_close(fd, cmds);
+			perror("pb is here\n");
 			exit(1);
 		}
 	}
 	else
 	{
-		perror(NULL);
+		printf("f0 %d, f1 %d\n", fd[0], fd[1]);
+		free_close(fd, cmds);
+		perror("pb is there");
 		exit(1);
 	}
 }

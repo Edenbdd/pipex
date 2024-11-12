@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 14:23:17 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/12 14:24:53 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/12 17:10:14 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,12 @@
 
 #include "pipex.h"
 
-void	error_exit(int result, int error_code, char *error_msg, int code)
+void	error_exit(int result, int error_code, char *error_msg, int code, int *fd, char ***cmds)
 {
 	if (result == error_code)
 	{
 		perror(error_msg);
+		free_close(fd, cmds);	
 		exit(code);
 	}
 	else
