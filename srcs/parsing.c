@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 09:12:10 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/13 10:09:51 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/13 10:15:56 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ void	check_access(char *infile, char* outfile, int *fd, char ***cmds)
 {
 	error_exit(access(infile, F_OK), -1,"infile", errno, fd, cmds);
 	error_exit(access(infile, R_OK), -1,"infile", errno, fd, cmds);
-	error_exit(access(outfile, F_OK), -1,"outfile", errno, fd, cmds); //voir creation pour outfile
 	error_exit(access(outfile, W_OK), -1,"outfile", errno, fd, cmds);
 }
 
