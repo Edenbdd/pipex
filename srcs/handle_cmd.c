@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:42:26 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/13 10:51:41 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/13 15:21:30 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,35 +16,37 @@
 #include "pipex.h"
 #include "libft.h"
 
-char	*handle_cmd(char *cmd, char **env, char ***cmds, int *fd, char *err_msg)
+char	*handle_cmd(char *cmd, char **env, t_err *err, char *err_msg)
 {
 	char	**paths;
 	char	*right_path;
 
 	if (!env)
-		return (absolute_path(cmd, fd, cmds, err_msg));
-	right_path = NULL;	
+		return (absolute_path(cmd, err, err_msg));
+	right_path = NULL;
 	paths = ft_split(getenv("PATH"), ':');
-	right_path = test_path(paths, cmd, right_path, fd, cmds, err_msg);
+	right_path = test_path(paths, cmd, err, err_msg);
 	free(paths);
 	if (!right_path)
 	{
-		right_path = absolute_path(cmd, fd, cmds, err_msg);
+		right_path = absolute_path(cmd, err, err_msg);
 		if (!right_path)
-			error_exit(1, 1, err_msg, errno, fd, cmds);
+			error_exit(1, 1, err_msg, err);
 	}
 	return (right_path);
 }
-
-char	*test_path(char **paths, char *cmd, char *right_path, int *fd, char ***cmds, char *err_msg)
+//diviser en 2 une fois debug fini
+char	*test_path(char **paths, char *cmd, t_err *err, char *err_msg)
 {
 	int		i;
 	char	*tmp;
 	char	*to_test;
 	int		no_permission;
+	char	*right_path;
 
 	i = 0;
 	no_permission = 0;
+	right_path = NULL;
 	while (paths[i])
 	{
 		tmp = ft_strjoin(paths[i], "/");
@@ -64,7 +66,7 @@ char	*test_path(char **paths, char *cmd, char *right_path, int *fd, char ***cmds
 		i++;
 	}
 	if (no_permission == 1)
-		error_exit(1, 1, err_msg, errno, fd, cmds);
+		error_exit(1, 1, err_msg, err);
 	return (right_path);
 }
 
@@ -75,7 +77,7 @@ void	triple_free(char *path, char *tmp, char *to_test)
 	free(to_test);
 }
 
-char	*absolute_path(char *cmd, int *fd, char ***cmds, char *err_msg)
+char	*absolute_path(char *cmd, t_err *err, char *err_msg)
 {
 	if (access(cmd, F_OK) == 0)
 	{
@@ -83,13 +85,13 @@ char	*absolute_path(char *cmd, int *fd, char ***cmds, char *err_msg)
 			return (cmd);
 		else
 		{
-			error_exit(-1, -1, err_msg, errno, fd, cmds);
+			error_exit(-1, -1, err_msg, err);
 			return (NULL);
 		}
 	}
 	else
 	{
-		error_exit(-1, -1, err_msg, errno, fd, cmds);
+		error_exit(-1, -1, err_msg, err);
 		return (NULL);
 	}
 }

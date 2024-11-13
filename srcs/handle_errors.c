@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 14:23:17 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/13 12:03:45 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/13 15:17:40 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,44 +15,46 @@
 
 #include "pipex.h"
 //norme 4 parametres
-void	error_exit(int result, int error_return, char *error_msg, int errno_code, int *fd, char ***cmds)
+void	error_exit(int result, int error_return, char *error_msg, t_err *err)
 {
 	if (result == error_return)
 	{
 		perror(error_msg);
-		free_close(fd, cmds);	
-		exit(errno_code);
+		free_close(err);	
+		exit(errno);
 	}
 	else
 		return;
 }
 
-void	free_close(int *fd, char ***cmds)
+void	free_close(t_err *err)
 {
 	int	i;
 	int	j;
 
 	i = 0;
-	if (fd)
+	if (err->fd)
 	{
-		if (fd[1])
-			close(fd[1]);
-		if(fd[0])	
-			close(fd[0]);
+		if (err->fd[1])
+			close(err->fd[1]);
+		if(err->fd[0])	
+			close(err->fd[0]);
+		free(err->fd);
 	}
-	if (cmds)
+	if (err->cmds)
 	{
-		while (cmds[i])
+		while (err->cmds[i])
 		{
 			j = 0;
-			while(cmds[i][j])
+			while(err->cmds[i][j])
 			{
-				free(cmds[i][j]);
+				free(err->cmds[i][j]);
 				j++;
 			}
-			free(cmds[i]);
+			free(err->cmds[i]);
 			i++;
 		}
-		free(cmds);
-	}
+		free(err->cmds);
+	}	
+	free(err);
 }

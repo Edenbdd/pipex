@@ -15,33 +15,45 @@
 #include "pipex.h"
 #include "libft.h"
 
+t_err	*init(void)
+{
+	t_err	*err;
+
+	err = ft_calloc(sizeof(t_err), 1);
+	if (!err)
+		exit(1);
+	err->fd = ft_calloc(sizeof(int), 2);
+	if (!err->fd)
+		exit(1);
+	err->fd[0] = 0;
+	err->fd[1] = 0;
+	err->cmds = NULL;
+	return (err);
+}
+
 int main(int argc, char **argv, char **env)
 {
-    char    ***cmds;
     int     id;
     int     id2;
-    int     fd[2];
+	t_err	*err;
 
 	if (!env[0])
 		env = NULL;
     if (argc != 5)
 		return (1);
-	cmds = NULL; //faire une fonction initialiser
-	fd[0] = 0;
-	fd[1] = 0;
-    cmds = get_cmds(argv, argc, fd, cmds);
-	printf("should not print\n");
-	check_access(argv[1], argv[argc - 1], fd, cmds);
-    error_exit(pipe(fd), -1, "pipe", 1, fd, cmds);
+	err = init();
+    err->cmds = get_cmds(argv, argc, err);
+	check_access(argv[1], argv[argc - 1], err);
+    error_exit(pipe(err->fd), -1, "pipe", err);
     id = fork();
-    error_exit(id, -1, "first fork", 1, fd, cmds);
+    error_exit(id, -1, "first fork", err);
     if (id == 0)
-		first_child(fd, cmds, argv[1], env);
+		first_child(err, argv[1], env);
     id2 = fork();
-	error_exit(id, -1, "second fork", 1, fd, cmds);
+	error_exit(id, -1, "second fork", err);
     if (id2 == 0)
-		sec_child(fd, cmds, argv[argc - 1], env);
-	free_close(fd, cmds);
+		sec_child(err, argv[argc - 1], env);
+	free_close(err);
     return (waiting(id, id2));
 }
 
