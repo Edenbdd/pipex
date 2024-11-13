@@ -14,7 +14,36 @@
 
 #include "pipex.h"
 #include "libft.h"
-/*
+
+int main(int argc, char **argv, char **env)
+{
+    char    ***cmds;
+    int     id;
+    int     id2;
+    int     fd[2];
+
+	if (!env[0])
+		env = NULL;
+    if (argc != 5)
+		return (1);
+	cmds = NULL;
+	check_access(argv[1], argv[argc - 1], fd, cmds);
+    cmds = get_cmds(argv, argc, fd, cmds);
+    error_exit(pipe(fd), -1, "pipe", 1, fd, cmds);
+    id = fork();
+    error_exit(id, -1, "first fork", 1, fd, cmds);
+    if (id == 0)
+		first_child(fd, cmds, argv[1], env);
+    id2 = fork();
+	error_exit(id, -1, "second fork", 1, fd, cmds);
+    if (id2 == 0)
+		sec_child(fd, cmds, argv[argc - 1], env);
+	free_close(fd, cmds);
+	waiting(id, 0);
+    return (0);
+}
+
+/* debug function to print the command
 static void	print_cmd(char ***cmds) //just for debug, delete/command at the end
 {
 	int	i;
@@ -34,33 +63,3 @@ static void	print_cmd(char ***cmds) //just for debug, delete/command at the end
 	}
 }
 */
-int main(int argc, char **argv, char **env)
-{
-    char    ***cmds;
-    int     id;
-    int     id2;
-    int     fd[2];
-
-	if (!env[0])
-		env = NULL;
-	//check nb arg
-    if (argc != 5)
-		{return (1);}
-    //check files
-	check_access(argv[1], argv[argc - 1]);
-	//cmds
-    cmds = get_cmds(argv, argc);
-//	print_cmd(cmds); pour debug si besoin
-    error_exit(pipe(fd), -1, NULL, 1, fd, cmds);
-    id = fork();
-    error_exit(id, -1, NULL, 1, fd, cmds);
-    if (id == 0)
-		first_child(fd, cmds, argv[1], env);
-    id2 = fork();
-	error_exit(id, -1, NULL, 1, fd, cmds);
-    if (id2 == 0)
-		sec_child(fd, cmds, argv[argc - 1], env);
-	free_close(fd, cmds);
-	waiting(id, 0);
-    return (0);
-}

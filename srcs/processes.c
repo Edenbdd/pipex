@@ -6,13 +6,11 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 11:48:25 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/13 08:42:46 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/13 09:25:51 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 //2 functions that each gather all the children specific instructions
-//and one function (free_close) for the parent specific instructions
-//at the end of the main
 
 #include "pipex.h"
 
@@ -26,10 +24,10 @@ void first_child(int *fd, char ***cmds, char *infile, char **env)
     dup2(in_fd, STDIN_FILENO);
     close(in_fd);
 	dup2(fd[1], STDOUT_FILENO);
-	path = handle_cmd(cmds[0][0], env, cmds, fd);
+	path = handle_cmd(cmds[0][0], env, cmds, fd, "first cmd");
 	close(fd[0]);
 	close(fd[1]);
-    error_exit(execve(path, cmds[0], env) , -1, NULL, 1, fd, cmds);
+    error_exit(execve(path, cmds[0], env) , -1, "first exexcve", errno, fd, cmds);
 }
 
 void sec_child(int *fd, char ***cmds, char *outfile, char **env)
@@ -38,39 +36,12 @@ void sec_child(int *fd, char ***cmds, char *outfile, char **env)
 	int		out_fd;
 
     dup2(fd[0], STDIN_FILENO);
-    out_fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    out_fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644); //check la creation du fichier
 	error_exit(out_fd, -1, NULL, 1, fd, cmds);
     dup2(out_fd, STDOUT_FILENO);
     close(out_fd);
-    path = handle_cmd(cmds[1][0], env, cmds, fd);
+    path = handle_cmd(cmds[1][0], env, cmds, fd, "second cmd");
 	close(fd[1]);
 	close(fd[0]);
-    error_exit(execve(path, cmds[1], env) , -1, NULL, 1, fd, cmds);
-}
-
-void	free_close(int *fd, char ***cmds)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	if (fd)
-	{
-		if (fd[0])
-			close(fd[1]);
-		if(fd[0])	
-			close(fd[0]);
-	}
-	while (cmds[i])
-	{
-		j = 0;
-		while(cmds[i][j])
-		{
-			free(cmds[i][j]);
-			j++;
-		}
-		free(cmds[i]);
-		i++;
-	}
-	free(cmds);
+    error_exit(execve(path, cmds[1], env) , -1, "second execve", errno, fd, cmds);
 }

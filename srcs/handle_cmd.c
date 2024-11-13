@@ -6,34 +6,43 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:42:26 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/13 08:42:10 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/13 10:11:28 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-//TEST AND VALGRIND THIS THING SEPARATLY TO MAKE SURE JOIN AND SPLIT DONT LEAK
+//Functions to find the path associated with each
+//and testing their access
 
-//For now only the handle_cmd command, change this later if needed
-// char **env
 #include "pipex.h"
 #include "libft.h"
 
-//A COUPER EN DEUX OU TROIS POUR REDUIRE LE NOMBRE DE LIGNE
-char	*handle_cmd(char *cmd, char **env, char ***cmds, int *fd)
+char	*handle_cmd(char *cmd, char **env, char ***cmds, int *fd, char *err_msg)
 {
 	char	**paths;
-	int		i;
-	char	*tmp;
-	char	*to_test;
 	char	*right_path;
 
 	if (!env)
-	{
-		right_path = absolute_path(cmd, fd, cmds);
-		return (right_path);
-	}		
+		return (absolute_path(cmd, fd, cmds, err_msg));
+	right_path = NULL;	
 	paths = ft_split(getenv("PATH"), ':');
+	right_path = test_path(paths, cmd, right_path, fd, cmds, err_msg);
+	free(paths);
+	if (!right_path)
+	{
+		right_path = absolute_path(cmd, fd, cmds, err_msg);
+		if (!right_path)
+			error_exit(1, 1, err_msg, errno, fd, cmds);
+	}
+	return (right_path);
+}
+
+char	*test_path(char **paths, char *cmd, char *right_path, int *fd, char ***cmds, char *err_msg)
+{
+	int		i;
+	char	*tmp;
+	char	*to_test;
+
 	i = 0;
-	right_path = NULL;
 	while (paths[i])
 	{
 		tmp = ft_strjoin(paths[i], "/");
@@ -44,30 +53,25 @@ char	*handle_cmd(char *cmd, char **env, char ***cmds, int *fd)
 			{
 				if (right_path)
 					free(right_path);
-				right_path = ft_strdup(to_test); // this leaks idk how to solve it
+				right_path = ft_strdup(to_test);
 			}
 			else
-				perror(NULL);
+				error_exit(1, 1, err_msg, errno, fd, cmds);
 		}
-		free(paths[i]);
-		free(tmp);
-		free(to_test);
+		triple_free(paths[i], tmp, to_test);
 		i++;
-	}
-	free(paths);
-	if (!right_path)
-	{
-		right_path = absolute_path(cmd, fd, cmds);
-		if (!right_path)
-		{
-			free_close(fd, cmds);
-			exit(127);
-		}
 	}
 	return (right_path);
 }
 
-char	*absolute_path(char *cmd, int *fd, char ***cmds)
+void	triple_free(char *path, char *tmp, char *to_test)
+{
+	free(path);
+	free(tmp);
+	free(to_test);
+}
+
+char	*absolute_path(char *cmd, int *fd, char ***cmds, char *err_msg)
 {
 	if (access(cmd, F_OK) == 0)
 	{
@@ -75,26 +79,13 @@ char	*absolute_path(char *cmd, int *fd, char ***cmds)
 			return (cmd);
 		else
 		{
-			free_close(fd, cmds);
-			perror("pb is here\n");
-			exit(1);
+			error_exit(-1, -1, err_msg, errno, fd, cmds);
+			return (NULL);
 		}
 	}
 	else
 	{
-		free_close(fd, cmds);
-		perror("pb is there");
-		exit(1);
+		error_exit(-1, -1, err_msg, errno, fd, cmds);
+		return (NULL);
 	}
 }
-/* main si besoin de test separement handle_cmd
-int	main(void)
-{
-	char	*path;
-
-	path = handle_cmd("ls");
-	printf("right path is: %s\n", path);
-	free(path);
-	return (0);
-}
-*/

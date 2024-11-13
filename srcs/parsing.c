@@ -6,33 +6,29 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 09:12:10 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/12 17:10:28 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/13 10:09:51 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 //For now here is parsing functions + main utils function used to shortened
 //the main such as error_exit and waiting
 
-#include "../includes/pipex.h"
-#include "../includes/libft.h"
+#include "pipex.h"
+#include "libft.h"
 
-char ***get_cmds(char **argv, int argc)
+char ***get_cmds(char **argv, int argc, int *fd, char ***cmds)
 {
 	int		i;
 	int		j;
-	char	***cmds;
 
 	i = 2;
 	j = 0;
 	cmds = ft_calloc(sizeof(char **), argc - 1);
 	while (i < argc - 1)
 	{
-		cmds[j] = ft_split(argv[i], 32); //switch this to a better modified split later
+		cmds[j] = ft_split(argv[i], 32);
 		if (!cmds)
-		{
-			perror(NULL);
-			exit(1);
-		}
+			error_exit(1, 1, "cmds error", 1, fd, cmds);
 		i++;
 		j++;
 	}
@@ -40,33 +36,12 @@ char ***get_cmds(char **argv, int argc)
 	return (cmds);
 }
 
-void	check_access(char *infile, char* outfile)
+void	check_access(char *infile, char* outfile, int *fd, char ***cmds)
 {
-	if (access(infile, F_OK))
-	{
-		perror(NULL);
-		exit(1);
-	}
-	if (access(infile, R_OK))
-	{
-		perror(NULL);
-		exit(1);
-	}
-	if (access(outfile, F_OK))
-	{
-		perror(NULL);
-		exit(1);
-	}
-	if (access(outfile, W_OK))
-	{
-		perror(NULL);
-		exit(1);
-	}
-	else
-	{
-	//	ft_putstr_fd("Files all good\n", 1);
-		return ;
-	}
+	error_exit(access(infile, F_OK), -1,"infile", errno, fd, cmds);
+	error_exit(access(infile, R_OK), -1,"infile", errno, fd, cmds);
+	error_exit(access(outfile, F_OK), -1,"outfile", errno, fd, cmds); //voir creation pour outfile
+	error_exit(access(outfile, W_OK), -1,"outfile", errno, fd, cmds);
 }
 
 void	waiting(int id1, int id2)
