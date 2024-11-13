@@ -26,8 +26,11 @@ int main(int argc, char **argv, char **env)
 		env = NULL;
     if (argc != 5)
 		return (1);
-	cmds = NULL;
+	cmds = NULL; //faire une fonction initialiser
+	fd[0] = 0;
+	fd[1] = 0;
     cmds = get_cmds(argv, argc, fd, cmds);
+	printf("should not print\n");
 	check_access(argv[1], argv[argc - 1], fd, cmds);
     error_exit(pipe(fd), -1, "pipe", 1, fd, cmds);
     id = fork();

@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 09:12:10 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/13 11:03:11 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/13 12:00:34 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ char ***get_cmds(char **argv, int argc, int *fd, char ***cmds)
 	i = 2;
 	j = 0;
 	cmds = ft_calloc(sizeof(char **), argc - 1);
+	if (!cmds)
+		error_exit(1, 1, "cmds error 1", 1, fd, cmds);
 	while (i < argc - 1)
 	{
 		cmds[j] = ft_split(argv[i], 32);

@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 14:23:17 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/13 11:44:52 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/13 12:03:45 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,21 +35,24 @@ void	free_close(int *fd, char ***cmds)
 	i = 0;
 	if (fd)
 	{
-		if (fd[1] > 0)
+		if (fd[1])
 			close(fd[1]);
-		if(fd[0] > 0)	
+		if(fd[0])	
 			close(fd[0]);
 	}
-	while (cmds[i])
+	if (cmds)
 	{
-		j = 0;
-		while(cmds[i][j])
+		while (cmds[i])
 		{
-			free(cmds[i][j]);
-			j++;
+			j = 0;
+			while(cmds[i][j])
+			{
+				free(cmds[i][j]);
+				j++;
+			}
+			free(cmds[i]);
+			i++;
 		}
-		free(cmds[i]);
-		i++;
+		free(cmds);
 	}
-	free(cmds);
 }
