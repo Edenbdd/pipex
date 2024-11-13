@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 11:48:25 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/12 17:08:23 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/13 08:42:46 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,11 +53,9 @@ void	free_close(int *fd, char ***cmds)
 	int	i;
 	int	j;
 
-	printf("Free_close has been called and will execute \n");
 	i = 0;
 	if (fd)
 	{
-		printf("I come here\n");
 		if (fd[0])
 			close(fd[1]);
 		if(fd[0])	

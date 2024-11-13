@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:42:26 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/12 17:10:09 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/13 08:42:10 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,19 +55,15 @@ char	*handle_cmd(char *cmd, char **env, char ***cmds, int *fd)
 		i++;
 	}
 	free(paths);
-	printf("right path before  %s\n", right_path);
 	if (!right_path)
 	{
 		right_path = absolute_path(cmd, fd, cmds);
-		printf("I come here\n");
 		if (!right_path)
 		{
-			printf("I willl exist through here !\n");
 			free_close(fd, cmds);
 			exit(127);
 		}
 	}
-	printf("right path after %s\n", right_path);
 	return (right_path);
 }
 
@@ -86,7 +82,6 @@ char	*absolute_path(char *cmd, int *fd, char ***cmds)
 	}
 	else
 	{
-		printf("f0 %d, f1 %d\n", fd[0], fd[1]);
 		free_close(fd, cmds);
 		perror("pb is there");
 		exit(1);

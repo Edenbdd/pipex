@@ -38,7 +38,7 @@ int main(int argc, char **argv, char **env)
 {
     char    ***cmds;
     int     id;
-    int     id2 = 0;
+    int     id2;
     int     fd[2];
 
 	if (!env[0])
@@ -61,6 +61,6 @@ int main(int argc, char **argv, char **env)
     if (id2 == 0)
 		sec_child(fd, cmds, argv[argc - 1], env);
 	free_close(fd, cmds);
-	waiting(id, id2);
+	waiting(id, 0);
     return (0);
 }
