@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:42:26 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/13 10:11:28 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/13 10:51:41 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,10 @@ char	*test_path(char **paths, char *cmd, char *right_path, int *fd, char ***cmds
 	int		i;
 	char	*tmp;
 	char	*to_test;
+	int		no_permission;
 
 	i = 0;
+	no_permission = 0;
 	while (paths[i])
 	{
 		tmp = ft_strjoin(paths[i], "/");
@@ -56,11 +58,13 @@ char	*test_path(char **paths, char *cmd, char *right_path, int *fd, char ***cmds
 				right_path = ft_strdup(to_test);
 			}
 			else
-				error_exit(1, 1, err_msg, errno, fd, cmds);
+				no_permission++;
 		}
 		triple_free(paths[i], tmp, to_test);
 		i++;
 	}
+	if (no_permission == 1)
+		error_exit(1, 1, err_msg, errno, fd, cmds);
 	return (right_path);
 }
 

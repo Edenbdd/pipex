@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 11:48:25 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/13 10:26:25 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/13 11:40:36 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,11 @@ void first_child(int *fd, char ***cmds, char *infile, char **env)
 	path = handle_cmd(cmds[0][0], env, cmds, fd, "first cmd");
 	close(fd[0]);
 	close(fd[1]);
-    error_exit(execve(path, cmds[0], env) , -1, "first exexcve", errno, fd, cmds);
+	if (execve(path, cmds[0], env))
+	{
+		free(path);
+		error_exit(-1, -1, "first exexcve", errno, fd, cmds);
+	}
 }
 
 void sec_child(int *fd, char ***cmds, char *outfile, char **env)
@@ -43,5 +47,9 @@ void sec_child(int *fd, char ***cmds, char *outfile, char **env)
     path = handle_cmd(cmds[1][0], env, cmds, fd, "second cmd");
 	close(fd[1]);
 	close(fd[0]);
-    error_exit(execve(path, cmds[1], env) , -1, "second execve", errno, fd, cmds);
+	if (execve(path, cmds[1], env))
+	{
+		free(path);
+		error_exit(-1, -1, "second exexcve", errno, fd, cmds);
+	}
 }

@@ -27,8 +27,8 @@ int main(int argc, char **argv, char **env)
     if (argc != 5)
 		return (1);
 	cmds = NULL;
-	check_access(argv[1], argv[argc - 1], fd, cmds);
     cmds = get_cmds(argv, argc, fd, cmds);
+	check_access(argv[1], argv[argc - 1], fd, cmds);
     error_exit(pipe(fd), -1, "pipe", 1, fd, cmds);
     id = fork();
     error_exit(id, -1, "first fork", 1, fd, cmds);
@@ -39,8 +39,7 @@ int main(int argc, char **argv, char **env)
     if (id2 == 0)
 		sec_child(fd, cmds, argv[argc - 1], env);
 	free_close(fd, cmds);
-	waiting(id, 0);
-    return (0);
+    return (waiting(id, id2));
 }
 
 /* debug function to print the command

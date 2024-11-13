@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 14:23:17 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/13 09:09:51 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/13 11:44:52 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 //and exit without leaks
 
 #include "pipex.h"
-
+//norme 4 parametres
 void	error_exit(int result, int error_return, char *error_msg, int errno_code, int *fd, char ***cmds)
 {
 	if (result == error_return)
@@ -35,9 +35,9 @@ void	free_close(int *fd, char ***cmds)
 	i = 0;
 	if (fd)
 	{
-		if (fd[0])
+		if (fd[1] > 0)
 			close(fd[1]);
-		if(fd[0])	
+		if(fd[0] > 0)	
 			close(fd[0]);
 	}
 	while (cmds[i])
