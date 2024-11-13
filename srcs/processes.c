@@ -6,23 +6,23 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 11:48:25 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/13 15:23:03 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/13 16:20:15 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-//2 functions that each gather all the children specific instructions
+// 2 functions that each gather all the children specific instructions
 
 #include "pipex.h"
 
-void first_child(t_err *err, char *infile, char **env)
+void	first_child(t_err *err, char *infile, char **env)
 {
- 	char	*path;
+	char	*path;
 	int		in_fd;
 
-    in_fd = open(infile, O_RDONLY);
+	in_fd = open(infile, O_RDONLY);
 	error_exit(in_fd, -1, "open infile", err);
-    dup2(in_fd, STDIN_FILENO);
-    close(in_fd);
+	dup2(in_fd, STDIN_FILENO);
+	close(in_fd);
 	dup2(err->fd[1], STDOUT_FILENO);
 	path = handle_cmd(err->cmds[0][0], env, err, "first cmd");
 	close(err->fd[0]);
@@ -34,17 +34,17 @@ void first_child(t_err *err, char *infile, char **env)
 	}
 }
 
-void sec_child(t_err *err, char *outfile, char **env)
+void	sec_child(t_err *err, char *outfile, char **env)
 {
-    char	*path;
+	char	*path;
 	int		out_fd;
 
-    dup2(err->fd[0], STDIN_FILENO);
-    out_fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	dup2(err->fd[0], STDIN_FILENO);
+	out_fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	error_exit(out_fd, -1, "open outfile", err);
-    dup2(out_fd, STDOUT_FILENO);
-    close(out_fd);
-    path = handle_cmd(err->cmds[1][0], env, err, "second cmd");
+	dup2(out_fd, STDOUT_FILENO);
+	close(out_fd);
+	path = handle_cmd(err->cmds[1][0], env, err, "second cmd");
 	close(err->fd[1]);
 	close(err->fd[0]);
 	if (execve(path, err->cmds[1], env))

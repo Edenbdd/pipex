@@ -10,10 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-//Only the main here
+// Only the main here
 
-#include "pipex.h"
 #include "libft.h"
+#include "pipex.h"
 
 t_err	*init(void)
 {
@@ -31,30 +31,30 @@ t_err	*init(void)
 	return (err);
 }
 
-int main(int argc, char **argv, char **env)
+int	main(int argc, char **argv, char **env)
 {
-    int     id;
-    int     id2;
+	int		id;
+	int		id2;
 	t_err	*err;
 
 	if (!env[0])
 		env = NULL;
-    if (argc != 5)
+	if (argc != 5)
 		return (1);
 	err = init();
-    err->cmds = get_cmds(argv, argc, err);
+	err->cmds = get_cmds(argv, argc, err);
 	check_access(argv[1], argv[argc - 1], err);
-    error_exit(pipe(err->fd), -1, "pipe", err);
-    id = fork();
-    error_exit(id, -1, "first fork", err);
-    if (id == 0)
+	error_exit(pipe(err->fd), -1, "pipe", err);
+	id = fork();
+	error_exit(id, -1, "first fork", err);
+	if (id == 0)
 		first_child(err, argv[1], env);
-    id2 = fork();
+	id2 = fork();
 	error_exit(id, -1, "second fork", err);
-    if (id2 == 0)
+	if (id2 == 0)
 		sec_child(err, argv[argc - 1], env);
 	free_close(err);
-    return (waiting(id, id2));
+	return (waiting(id, id2));
 }
 
 /* debug function to print the command
