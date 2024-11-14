@@ -6,12 +6,13 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 14:23:17 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/13 17:06:16 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/14 08:36:25 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // functions to handle exit codes, errors, no env...etc
-// and exit without leaks
+// and exit without leaks, includes functions to free specific data structure
+//(char ** or char ***) and to free the err struct
 
 #include "pipex.h"
 
@@ -62,4 +63,17 @@ void	free_cmds(t_err *err)
 		}
 		free(err->cmds);
 	}
+}
+
+void	free_path(char **paths)
+{
+	int	i;
+
+	i = 0;
+	while (paths[i])
+	{
+		free(paths[i]);
+		i++;
+	}
+	free(paths);
 }

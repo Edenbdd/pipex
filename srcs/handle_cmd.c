@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:42:26 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/13 16:43:00 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/14 08:37:19 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,18 +38,24 @@ char	*handle_cmd(char *cmd, char **env, t_err *err, char *err_msg)
 	return (right_path);
 }
 
-char	*join_path(char *path, char *cmd, t_err *err)
+char	*join_path(char *path, char *cmd, t_err *err, char **paths)
 {
 	char	*tmp;
 	char	*to_test;
 
 	tmp = ft_strjoin(path, "/");
 	if (!tmp)
+	{
+		free_path(paths);
 		error_exit(1, 1, "ft_join failed for tmp", err);
+	}
 	to_test = ft_strjoin(tmp, cmd);
 	free(tmp);
 	if (!to_test)
+	{
+		free_path(paths);
 		error_exit(1, 1, "ft_join failed for to_test", err);
+	}
 	return (to_test);
 }
 
@@ -63,7 +69,7 @@ char	*test_path(char **paths, char *cmd, t_err *err, char *err_msg)
 	right_path = NULL;
 	while (paths[i])
 	{
-		to_test = join_path(paths[i], cmd, err);
+		to_test = join_path(paths[i], cmd, err, paths);
 		if (access(to_test, F_OK) == 0)
 		{
 			if (access(to_test, X_OK) == 0)
@@ -80,41 +86,6 @@ char	*test_path(char **paths, char *cmd, t_err *err, char *err_msg)
 	}
 	return (right_path);
 }
-/*
-char	*test_path(char **paths, char *cmd, t_err *err, char *err_msg)
-{
-	int		i;
-	char	*tmp;
-	char	*to_test;
-	char	*right_path;
-
-	i = 0;
-	right_path = NULL;
-	while (paths[i])
-	{
-		tmp = ft_strjoin(paths[i], "/");
-		if (!tmp)
-			error_exit(1, 1, "ft_join failed for tmp", err);
-		to_test = ft_strjoin(tmp, cmd);
-		if (!to_test)
-			error_exit(1, 1, "ft_join failed for to_test", err);
-		if (access(to_test, F_OK) == 0)
-		{
-			if (access(to_test, X_OK) == 0)
-			{
-				if (right_path)
-					free(right_path);
-				right_path = ft_strdup(to_test);
-			}
-			else
-				error_exit(1, 1, err_msg, err);
-		}
-		triple_free(paths[i], tmp, to_test);
-		i++;
-	}
-	return (right_path);
-}
-*/
 
 void	triple_free(char *path, char *tmp, char *to_test)
 {
