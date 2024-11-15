@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_cmd.c                                       :+:      :+:    :+:   */
+/*   handle_cmd_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:42:26 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/14 14:32:10 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/15 10:13:38 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,26 @@
 // and testing their access
 
 #include "../includes/libft.h"
-#include "../includes/pipex.h"
+#include "../includes_bonus/pipex_bonus.h"
 
-char	*handle_cmd(char *cmd, char **env, t_err *err, char *err_msg)
+char	*handle_cmd(char *cmd, char **env, t_err *err)
 {
 	char	**paths;
 	char	*right_path;
 
 	if (!env)
-		return (absolute_path(cmd, err, err_msg));
+		return (absolute_path(cmd, err));
 	right_path = NULL;
 	paths = ft_split(getenv("PATH"), ':');
 	if (!paths)
-		error_exit(1, 1, "paths in handle cmd", err);
-	right_path = test_path(paths, cmd, err, err_msg);
+		error_exit(1, 1, error_msg(err->position, err, "paths in handle cmd "), err);
+	right_path = test_path(paths, cmd, err);
 	free(paths);
 	if (!right_path)
 	{
-		right_path = absolute_path(cmd, err, err_msg);
+		right_path = absolute_path(cmd, err);
 		if (!right_path)
-			error_exit(1, 1, err_msg, err);
+			error_exit(1, 1, error_msg(err->position, err, "no_right found in handle cmd "), err);
 	}
 	return (right_path);
 }
@@ -47,19 +47,19 @@ char	*join_path(char *path, char *cmd, t_err *err, char **paths)
 	if (!tmp)
 	{
 		free_path(paths);
-		error_exit(1, 1, "ft_join failed for tmp", err);
+		error_exit(1, 1, error_msg(err->position, err, "ft_join failed for tmp "), err);
 	}
 	to_test = ft_strjoin(tmp, cmd);
 	free(tmp);
 	if (!to_test)
 	{
 		free_path(paths);
-		error_exit(1, 1, "ft_join failed for to_test", err);
+		error_exit(1, 1, error_msg(err->position, err, "ft_join failed for to_test "), err);
 	}
 	return (to_test);
 }
 
-char	*test_path(char **paths, char *cmd, t_err *err, char *err_msg)
+char	*test_path(char **paths, char *cmd, t_err *err)
 {
 	int		i;
 	char	*to_test;
@@ -79,7 +79,7 @@ char	*test_path(char **paths, char *cmd, t_err *err, char *err_msg)
 				right_path = ft_strdup(to_test);
 			}
 			else
-				error_exit(1, 1, err_msg, err);
+				error_exit(1, 1, error_msg(err->position, err, "cmd "), err);
 		}
 		triple_free(paths[i], to_test, NULL);
 		i++;
@@ -94,7 +94,7 @@ void	triple_free(char *path, char *tmp, char *to_test)
 	free(to_test);
 }
 
-char	*absolute_path(char *cmd, t_err *err, char *err_msg)
+char	*absolute_path(char *cmd, t_err *err)
 {
 	if (access(cmd, F_OK) == 0)
 	{
@@ -102,13 +102,13 @@ char	*absolute_path(char *cmd, t_err *err, char *err_msg)
 			return (cmd);
 		else
 		{
-			error_exit(-1, -1, err_msg, err);
+			error_exit(-1, -1, error_msg(err->position, err, "cmd "), err);
 			return (NULL);
 		}
 	}
 	else
 	{
-		error_exit(-1, -1, err_msg, err);
+		error_exit(-1, -1, error_msg(err->position, err, "cmd "), err);
 		return (NULL);
 	}
 }
