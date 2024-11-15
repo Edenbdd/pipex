@@ -6,7 +6,7 @@
 #    By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/14 14:27:04 by aubertra          #+#    #+#              #
-#    Updated: 2024/11/14 14:48:44 by aubertra         ###   ########.fr        #
+#    Updated: 2024/11/15 16:54:00 by aubertra         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ OBJS= $(SRCS:.c=.o)
 OBJS_BONUS= $(SRCS_BONUS:.c=.o)
 
 CC= cc
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -g3
 
 all: $(NAME)
 

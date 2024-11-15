@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 09:09:05 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/15 10:29:46 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/15 17:19:59 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,15 @@ typedef struct s_err	t_err;
 
 struct					s_err
 {
-	int					position;
+	int					cmd_index;
+	int					cmd_nb;
+	int					*previous_fd;
 	int					*fd;
 	char				***cmds;
 };
 
 void					check_access(char *infile, char *outfile, t_err *err);
-void					first_child(t_err *err, char *infile, char **env);
-void					middle_child(t_err *err, char *outfile, char **env, int nb);
-void					last_child(t_err *err, char *outfile, char **env);
+void					child_process(t_err *err, char *infile, char **env, int cmd_nb);
 void					free_close(t_err *err);
 void					error_exit(int result, int error_return,
 							char *error_msg, t_err *err);

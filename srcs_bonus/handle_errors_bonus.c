@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 14:23:17 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/15 10:30:05 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/15 17:44:46 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ char	*error_msg(t_err *err, char *msg)
 	char	*error_msg;
 	
 	error_msg = NULL;
-	if (err->position != 0)
-		error_msg = ft_strjoin(msg, ft_itoa(err->position));
+	if (err->cmd_index != 0)
+		error_msg = ft_strjoin(msg, ft_itoa(err->cmd_index));
 	else
 		error_msg = ft_strdup(msg);
 	return (error_msg);

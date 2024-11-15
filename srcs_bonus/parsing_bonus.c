@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 09:12:10 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/15 10:32:19 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/15 17:44:59 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,5 +62,6 @@ int	waiting(int id_last)
 				retcode = WSTOPSIG(status);
 		}
 	}
+	printf("not gonna print\n");
 	return (retcode);
 }
