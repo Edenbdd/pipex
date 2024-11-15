@@ -47,10 +47,10 @@ int	main(int argc, char **argv, char **env)
 	err = init();
 	err->cmds = get_cmds(argv, argc, err);
 	check_access(argv[1], argv[argc - 1], err); //still the same except for here_doc
-	error_exit(pipe(err->fd), -1, error_msg(0, err, "pipe"), err);
+	error_exit(pipe(err->fd), -1, error_msg(err, "pipe"), err);
 	//first child (handle infile)
 	id_first = fork();
-	error_exit(id_first, -1, error_msg(0, err,"first fork"), err);
+	error_exit(id_first, -1, error_msg(err,"first fork"), err);
 	if (id_first == 0)
 		first_child(err, argv[1], env);
 	//middle children
@@ -60,14 +60,14 @@ int	main(int argc, char **argv, char **env)
 		//creer un pipe dans la boucle ???
 		err->position = i - 1; //need to start from second cmd
 		id_middle = fork();
-		error_exit(id_middle, -1, error_msg(0, err, "middle fork"), err);
+		error_exit(id_middle, -1, error_msg(err, "middle fork"), err);
 		if (id_middle == 0)
 			middle_child(err, argv[i], env, i);
 		i++;
 	}
 	//last child (handle outfile)
 	id_last = fork();
-	error_exit(id_last, -1, error_msg(0, err, "lastfork"), err);
+	error_exit(id_last, -1, error_msg(err, "lastfork"), err);
 	if (id_last == 0)
 		last_child(err, argv[argc - 1], env);
 	//cleaning and closing the code
