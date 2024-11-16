@@ -6,7 +6,7 @@ CC = cc
 
 CFLAGS = -Wall -Werror -Wextra -g3
 
-SRC = ft_atoi.c\
+SRCS = ft_atoi.c\
 	  ft_atoll.c\
       ft_bzero.c\
       ft_calloc.c\
@@ -43,8 +43,10 @@ SRC = ft_atoi.c\
       ft_substr.c\
       ft_tolower.c\
       ft_toupper.c\
+	  get_next_line_utils.c\
+	  get_next_line.c\
 
-OBJS = $(SRC:.c=.o)
+OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)
 
@@ -62,4 +64,4 @@ fclean: clean
 
 re:	fclean all
 
-.PHONY:	all clean fclean re so
+.PHONY:	all clean fclean re

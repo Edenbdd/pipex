@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 09:09:05 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/16 10:21:07 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/16 14:10:19 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,9 @@ void					error_exit(int result, int error_return,
 void					triple_free(char *path, char *tmp, char *to_test);
 void					free_cmds(t_err *err);
 void					free_path(char **paths);
+void					heredoc_child_process(t_err *err, char *outfile, char **env);
 
+int						heredoc_exec(char **argv, char **env, t_err *err);
 int						waiting(int id_last);
 
 char					*absolute_path(char *cmd, t_err *err);
@@ -50,6 +52,6 @@ char					*join_path(char *path, char *cmd, t_err *err,
 							char **paths);
 char					*error_msg(t_err *err, char *msg);
 
-char					***get_cmds(char **argv, int argc, t_err *err);
+char					***get_cmds(char **argv, int argc, t_err *err, int first_cmd_index);
 
 #endif

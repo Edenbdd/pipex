@@ -63,9 +63,13 @@ int	main(int argc, char **argv, char **env)
 	if (argc < 5)
 		return (1);
 	err = init();
-	err->cmds = get_cmds(argv, argc, err);
-	check_access(argv[1], argv[argc - 1], err); //still the same except for here_doc
-	//children
+	if (!ft_strncmp(argv[1], "here_doc", 8))
+	{
+		heredoc_exec(argv, env, err);
+		return (0);
+	}
+	check_access(argv[1], argv[argc - 1], err);
+	err->cmds = get_cmds(argv, argc, err, 2);
 	i = 2;
 	err->cmd_nb = argc - 4;
 	while (i <= argc - 2)
@@ -82,7 +86,6 @@ int	main(int argc, char **argv, char **env)
 		err->previous_fd = err->fd[0];
 		i++;
 	}
-	//cleaning and closing the code
-	free_close(err); //check que je free tout correctement meme avec une loop de children
+	free_close(err);
 	return (waiting(id));
 }

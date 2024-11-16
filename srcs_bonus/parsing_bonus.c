@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 09:12:10 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/16 10:45:10 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/16 13:09:14 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,13 @@
 #include "../includes/libft.h"
 #include "../includes_bonus/pipex_bonus.h"
 
-char	***get_cmds(char **argv, int argc, t_err *err)
+char	***get_cmds(char **argv, int argc, t_err *err, int first_cmd_index)
 {
 	int	i;
 	int	j;
 	char	*error_nb;
 
-	i = 2;
+	i = first_cmd_index;
 	j = 0;
 	err->cmds = ft_calloc(sizeof(char **), argc - 1);
 	if (!err->cmds)
@@ -41,8 +41,11 @@ char	***get_cmds(char **argv, int argc, t_err *err)
 
 void	check_access(char *infile, char *outfile, t_err *err)
 {
-	error_exit(access(infile, F_OK), -1, error_msg(err, "infile "), err);
-	error_exit(access(infile, R_OK), -1, error_msg(err, "infile "), err);
+	if (infile)
+	{
+		error_exit(access(infile, F_OK), -1, error_msg(err, "infile "), err);
+		error_exit(access(infile, R_OK), -1, error_msg(err, "infile "), err);
+	}
 	if (!access(outfile, F_OK))
 		error_exit(access(outfile, W_OK), -1, error_msg(err, "outfile "), err);
 }
