@@ -15,6 +15,7 @@
 #include "../includes/libft.h"
 #include "../includes_bonus/pipex_bonus.h"
 
+/*
 // debug function to print the command
 static void	print_cmd(char ***cmds) //just for debug, delete/command at the end
 {
@@ -34,7 +35,7 @@ static void	print_cmd(char ***cmds) //just for debug, delete/command at the end
 		i++;
 	}
 }
-
+*/
 t_err	*init(void)
 {
 	t_err	*err;
@@ -43,16 +44,9 @@ t_err	*init(void)
 	if (!err)
 		exit(1);
 	err->cmd_index = 0;
-	err->fd = ft_calloc(sizeof(int), 2);
-	if (!err->fd)
-		exit(1);
-	err->fd[0] = 0;
-	err->fd[1] = 0;
-	err->previous_fd = ft_calloc(sizeof(int), 2);
-	if (!err->previous_fd)
-		exit(1);
-	err->previous_fd[0] = -1;
-	err->previous_fd[1] = -1;
+	err->fd[0] = -1;
+	err->fd[1] = -1;
+	err->previous_fd = -1;
 	err->cmd_nb = 0;
 	err->cmds = NULL;
 	return (err);
@@ -70,26 +64,22 @@ int	main(int argc, char **argv, char **env)
 		return (1);
 	err = init();
 	err->cmds = get_cmds(argv, argc, err);
-	print_cmd(err->cmds);
 	check_access(argv[1], argv[argc - 1], err); //still the same except for here_doc
 	//children
 	i = 2;
 	err->cmd_nb = argc - 4;
-	while (i < argc - 2)
+	while (i <= argc - 2)
 	{
 		err->cmd_index = i - 2;
-		error_exit(pipe(err->fd), -1, error_msg(err, "pipe "), err);
+		error_exit(pipe(err->fd), -1, error_msg(err, "pipe failed "), err);
 		id = fork();
-		error_exit(id, -1, error_msg(err, "middle fork"), err);
+		error_exit(id, -1, error_msg(err, "fork failed "), err);
 		if (id == 0)
-			child_process(err, argv[i], env, i);
+			child_process(err, argv[1], argv[argc - 1], env);
+		close(err->fd[1]);
 		if (err->cmd_index > 1)
-		{
-			close(err->previous_fd[0]);
-			close(err->previous_fd[1]);
-		}
-		err->previous_fd[0] = err->fd[0];
-		err->previous_fd[1] = err->fd[1];
+			close(err->previous_fd);
+		err->previous_fd = err->fd[0];
 		i++;
 	}
 	//cleaning and closing the code

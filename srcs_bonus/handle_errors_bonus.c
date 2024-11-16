@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 14:23:17 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/15 17:44:46 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/16 10:31:49 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,14 +46,13 @@ void	error_exit(int result, int error_return, char *error_msg, t_err *err)
 
 void	free_close(t_err *err)
 {
-	if (err->fd)
-	{
-		if (err->fd[1])
-			close(err->fd[1]);
-		if (err->fd[0])
-			close(err->fd[0]);
-		free(err->fd);
-	}
+	if (err->fd[1] != -1)
+		close(err->fd[1]);
+	if (err->fd[0] != -1)
+		close(err->fd[0]);
+//	free(err->fd);
+	if (err->previous_fd != -1)
+		close(err->previous_fd);
 	free_cmds(err);
 	free(err);
 }

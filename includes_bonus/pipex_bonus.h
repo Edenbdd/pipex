@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 09:09:05 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/15 17:19:59 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/16 10:21:07 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,13 @@ struct					s_err
 {
 	int					cmd_index;
 	int					cmd_nb;
-	int					*previous_fd;
-	int					*fd;
+	int					previous_fd;
+	int					fd[2];
 	char				***cmds;
 };
 
 void					check_access(char *infile, char *outfile, t_err *err);
-void					child_process(t_err *err, char *infile, char **env, int cmd_nb);
+void					child_process(t_err *err, char *infile, char *outfile, char **env);
 void					free_close(t_err *err);
 void					error_exit(int result, int error_return,
 							char *error_msg, t_err *err);
