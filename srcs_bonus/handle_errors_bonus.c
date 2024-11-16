@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 14:23:17 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/16 10:31:49 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/16 11:16:19 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,11 @@
 char	*error_msg(t_err *err, char *msg)
 {
 	char	*error_msg;
-	
-	error_msg = NULL;
-	if (err->cmd_index != 0)
-		error_msg = ft_strjoin(msg, ft_itoa(err->cmd_index));
-	else
-		error_msg = ft_strdup(msg);
+	char	*nb;
+
+	nb = ft_itoa(err->cmd_index);
+	error_msg = ft_strjoin(msg, nb);
+	free(nb);
 	return (error_msg);
 }
 
@@ -40,8 +39,8 @@ void	error_exit(int result, int error_return, char *error_msg, t_err *err)
 		free_close(err);
 		exit(1);
 	}
-	else
-		return ;
+	free(error_msg);
+	return ;
 }
 
 void	free_close(t_err *err)
@@ -50,7 +49,6 @@ void	free_close(t_err *err)
 		close(err->fd[1]);
 	if (err->fd[0] != -1)
 		close(err->fd[0]);
-//	free(err->fd);
 	if (err->previous_fd != -1)
 		close(err->previous_fd);
 	free_cmds(err);

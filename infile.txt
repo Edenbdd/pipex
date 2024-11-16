@@ -1,4 +1,0 @@
-test
-blabla
-suite test
-last line

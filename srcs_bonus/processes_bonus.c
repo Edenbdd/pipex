@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 11:48:25 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/16 10:45:02 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/16 11:23:57 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,6 @@ void	child_process(t_err *err, char *infile, char *outfile, char **env)
 	if (execve(path, err->cmds[err->cmd_index], env))
 	{
 		free(path);
-		error_exit(-1, -1, "exexcve failed", err);
+		error_exit(-1, -1, error_msg(err, "exexcve failed "), err);
 	}
 }
