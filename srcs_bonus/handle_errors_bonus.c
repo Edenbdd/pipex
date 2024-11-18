@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 14:23:17 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/16 11:16:19 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/18 11:08:06 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,17 @@ void	free_close(t_err *err)
 		close(err->previous_fd);
 	free_cmds(err);
 	free(err);
+}
+//plus tard
+void	free_heredoc(t_err *err, char *current_line)
+{
+	free_close(err);
+	if (unlink("heredoc_tmp") == -1)
+	{
+		printf("error de unlink\n");
+		return ;
+	}
+	free(current_line);
 }
 
 void	free_cmds(t_err *err)

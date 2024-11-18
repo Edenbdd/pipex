@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 10:12:40 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/16 16:32:40 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/18 10:39:51 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ char *left_char(char *line, char *limiter)
     char *end_of_line;
     char *remaining_line;
     int len_before_limiter;
-
+	int i = 0;
     // Find the position of the limiter in the line
     end_of_line = gnl_substrchr(line, limiter);
     if (!end_of_line)
@@ -84,8 +84,12 @@ char *left_char(char *line, char *limiter)
     if (!remaining_line)
         return (free(line), NULL);
     // Copy everything before the limiter into remaining_line
-    for (int i = 0; i < len_before_limiter; i++)
+    while ( i < len_before_limiter)
+	{
         remaining_line[i] = line[i];
+		i++;
+	}
+	remaining_line[i] = '\0';
     // Free the original line as it is no longer needed
     free(line);
     return (remaining_line);

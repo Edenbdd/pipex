@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 09:12:10 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/16 13:09:14 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/18 10:57:56 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ char	***get_cmds(char **argv, int argc, t_err *err, int first_cmd_index)
 {
 	int	i;
 	int	j;
-	char	*error_nb;
 
 	i = first_cmd_index;
 	j = 0;
@@ -57,7 +56,7 @@ int	waiting(int id_last)
 
 	while (ECHILD != errno)
 	{
-		if (waitpid(0, &status, 0) == id_last)
+		if (waitpid(-1, &status, 0) == id_last)
 		{
 			if (WIFEXITED(status))
 				retcode = WEXITSTATUS(status);

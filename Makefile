@@ -6,7 +6,7 @@
 #    By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/14 14:27:04 by aubertra          #+#    #+#              #
-#    Updated: 2024/11/16 10:25:23 by aubertra         ###   ########.fr        #
+#    Updated: 2024/11/18 10:41:24 by aubertra         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ OBJS= $(SRCS:.c=.o)
 OBJS_BONUS= $(SRCS_BONUS:.c=.o)
 
 CC= cc
-CFLAGS = -Wall -Werror -Wextra -g
+CFLAGS = -Wall -Werror -Wextra -g3
 
 all: $(NAME)
 
@@ -40,7 +40,7 @@ $(NAME): $(addprefix srcs/,$(OBJS))
 		make -C libft
 		$(CC) $(CFLAGS) $^ -L libft -l ft -o $(NAME)
 %.o: %.c
-	$(CC) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 		rm -f $(addprefix srcs/,$(OBJS)) $(addprefix srcs_bonus/,$(OBJS_BONUS)) 

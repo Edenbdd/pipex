@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 09:09:05 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/16 14:10:19 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/18 09:53:25 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ struct					s_err
 	char				***cmds;
 };
 
+void					free_heredoc(t_err *err, char *current_line);
 void					check_access(char *infile, char *outfile, t_err *err);
 void					child_process(t_err *err, char *infile, char *outfile, char **env);
 void					free_close(t_err *err);
