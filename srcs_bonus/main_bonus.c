@@ -10,32 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// Only the main here
+//Main + helper functions
 
 #include "../includes/libft.h"
 #include "../includes_bonus/pipex_bonus.h"
 
-/*
-// debug function to print the command
-static void	print_cmd(char ***cmds) //just for debug, delete/command at the end
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (cmds[i])
-	{
-		j= 0;
-		while (cmds[i][j])
-		{
-			printf("%s;", cmds[i][j]);
-			j++;
-		}
-		printf("\n");
-		i++;
-	}
-}
-*/
 t_err	*init(void)
 {
 	t_err	*err;
@@ -43,6 +22,7 @@ t_err	*init(void)
 	err = ft_calloc(sizeof(t_err), 1);
 	if (!err)
 		exit(1);
+	err->heredoc = 0;
 	err->cmd_index = 0;
 	err->fd[0] = -1;
 	err->fd[1] = -1;
@@ -51,13 +31,12 @@ t_err	*init(void)
 	err->cmds = NULL;
 	return (err);
 }
-//main a recouper pour les 25 lignes !!
+
 int	main(int argc, char **argv, char **env)
 {
-	int		id;
 	t_err	*err;
-	int		i;
-
+	int		id;
+	
 	if (!env[0])
 		env = NULL;
 	if (argc < 5)
@@ -70,22 +49,40 @@ int	main(int argc, char **argv, char **env)
 	}
 	check_access(argv[1], argv[argc - 1], err);
 	err->cmds = get_cmds(argv, argc, err, 2);
+	id = children_generator(argv, env, argc, err);
+	free_close(err);
+	return (waiting(id));
+}
+
+int	children_generator(char **argv, char **env, int argc, t_err *err)
+{
+	int	i;
+	int	id;
+	int	stop;
+
 	i = 2;
 	err->cmd_nb = argc - 4;
-	while (i <= argc - 2)
+	if (err->heredoc)
+		stop = argc - 3;
+	else
+		stop = argc - 2;
+	while (i <= stop)
 	{
 		err->cmd_index = i - 2;
 		error_exit(pipe(err->fd), -1, error_msg(err, "pipe failed "), err);
 		id = fork();
+		printf("%d\n", id);
 		error_exit(id, -1, error_msg(err, "fork failed "), err);
-		if (id == 0)
+		if (id == 0 && !err->heredoc)
 			child_process(err, argv[1], argv[argc - 1], env);
+		else if (id == 0 && err->heredoc)
+			heredoc_child_process(err, argv[argc - 1], env);
+		err->cmd_index = 1;
 		close(err->fd[1]);
 		if (err->cmd_index > 1)
 			close(err->previous_fd);
 		err->previous_fd = err->fd[0];
 		i++;
 	}
-	free_close(err);
-	return (waiting(id));
+	return (id);
 }

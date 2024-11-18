@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 09:09:05 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/18 09:53:25 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/18 16:42:46 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ typedef struct s_err	t_err;
 
 struct					s_err
 {
+	int					heredoc;
 	int					cmd_index;
 	int					cmd_nb;
 	int					previous_fd;
@@ -45,6 +46,8 @@ void					heredoc_child_process(t_err *err, char *outfile, char **env);
 
 int						heredoc_exec(char **argv, char **env, t_err *err);
 int						waiting(int id_last);
+int						children_generator(char **argv, char **env,
+							int argc, t_err *err);
 
 char					*absolute_path(char *cmd, t_err *err);
 char					*handle_cmd(char *cmd, char **env, t_err *err);

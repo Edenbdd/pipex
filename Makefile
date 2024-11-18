@@ -6,7 +6,7 @@
 #    By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/14 14:27:04 by aubertra          #+#    #+#              #
-#    Updated: 2024/11/18 10:41:24 by aubertra         ###   ########.fr        #
+#    Updated: 2024/11/18 13:16:01 by aubertra         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,10 +17,11 @@ SRCS= main.c\
 	 processes.c\
 
 SRCS_BONUS = main_bonus.c\
-	 handle_cmd_bonus.c\
-	 handle_errors_bonus.c\
-	 parsing_bonus.c\
-	 processes_bonus.c\
+	 		handle_cmd_bonus.c\
+	 		handle_errors_bonus.c\
+	 		parsing_bonus.c\
+	 		processes_bonus.c\
+			handle_heredoc.c\
 
 NAME= pipex
 

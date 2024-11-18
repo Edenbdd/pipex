@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 09:12:10 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/18 10:57:56 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/18 13:39:52 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,12 @@ int	waiting(int id_last)
 		{
 			if (WIFEXITED(status))
 				retcode = WEXITSTATUS(status);
-			else
-				retcode = WSTOPSIG(status);
+			if (WIFSIGNALED(status)) 
+			{
+				retcode = WTERMSIG(status);
+				if (retcode != 131)
+					retcode += 128;
+			}
 		}
 	}
 	return (retcode);
