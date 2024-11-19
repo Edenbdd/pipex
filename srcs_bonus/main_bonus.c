@@ -15,72 +15,74 @@
 #include "../includes/libft.h"
 #include "../includes_bonus/pipex_bonus.h"
 
-t_err	*init(void)
+void	init(t_err *err, int argc)
 {
-	t_err	*err;
-
-	err = ft_calloc(sizeof(t_err), 1);
-	if (!err)
-		exit(1);
+	err->first_cmd = 2;
 	err->heredoc = 0;
 	err->cmd_index = 0;
 	err->fd[0] = -1;
 	err->fd[1] = -1;
 	err->previous_fd = -1;
-	err->cmd_nb = 0;
+	err->cmd_nb =  argc - 4;
 	err->cmds = NULL;
-	return (err);
+}
+
+void	create_doc(char **argv, t_err *err)
+{
+	char *current_line;
+
+    err->previous_fd = open("heredoc_tmp", O_RDWR | O_CREAT | O_TRUNC, 0644);
+    error_exit(err->previous_fd, -1, error_msg(err, "creation of heredoc_tmp failed "), err);
+    current_line = get_next_line(STDIN_FILENO, argv[2]);
+	write(err->previous_fd, current_line, ft_strlen(current_line));
+	free(current_line);
+	close(err->previous_fd);
+    err->previous_fd = open("heredoc_tmp", O_RDWR | O_CREAT, 0644);
+	err->heredoc = 1;
+	err->first_cmd = 3;
+	err->cmd_nb -= 1;
 }
 
 int	main(int argc, char **argv, char **env)
 {
-	t_err	*err;
+	t_err	err;
 	int		id;
 	
 	if (!env[0])
 		env = NULL;
 	if (argc < 5)
 		return (1);
-	err = init();
+	init(&err, argc);
 	if (!ft_strncmp(argv[1], "here_doc", 8))
-	{
-		heredoc_exec(argv, env, err);
-		return (0);
-	}
-	check_access(argv[1], argv[argc - 1], err);
-	err->cmds = get_cmds(argv, argc, err, 2);
-	id = children_generator(argv, env, argc, err);
-	free_close(err);
+		create_doc(argv, &err);
+	check_access(argv[1], argv[argc - 1], &err);
+	err.cmds = get_cmds(argv, argc, &err);
+	id = children_generator(argv, env, argc, &err);
+	printf("lets print this process id [%d]\n", getpid());
+	free_close(&err);
+	close(err.previous_fd);
+	printf("previous %d\n", err.previous_fd);
 	return (waiting(id));
 }
 
-int	children_generator(char **argv, char **env, int argc, t_err *err)
+int	waiting(int id_last)
 {
-	int	i;
-	int	id;
-	int	stop;
+	int	status;
+	int	retcode;
 
-	i = 2;
-	err->cmd_nb = argc - 4;
-	if (err->heredoc)
-		stop = argc - 3;
-	else
-		stop = argc - 2;
-	while (i <= stop)
+	while (ECHILD != errno)
 	{
-		error_exit(pipe(err->fd), -1, error_msg(err, "pipe failed "), err);
-		id = fork();
-		error_exit(id, -1, error_msg(err, "fork failed "), err);
-		if (id == 0 && !err->heredoc)
-			child_process(err, argv[1], argv[argc - 1], env);
-		else if (id == 0 && err->heredoc)
-			heredoc_child_process(err, argv[argc - 1], env);
-		err->cmd_index++;
-		close(err->fd[1]);
-		if (err->cmd_index > 0) //!! l index des cmd doit commencer a 0 hors il etait a 1 ici donc pb ?
-			close(err->previous_fd);
-		err->previous_fd = err->fd[0];
-		i++;
+		if (waitpid(-1, &status, 0) == id_last)
+		{
+			if (WIFEXITED(status))
+				retcode = WEXITSTATUS(status);
+			if (WIFSIGNALED(status)) 
+			{
+				retcode = WTERMSIG(status);
+				if (retcode != 131)
+					retcode += 128;
+			}
+		}
 	}
-	return (id);
+	return (retcode);
 }

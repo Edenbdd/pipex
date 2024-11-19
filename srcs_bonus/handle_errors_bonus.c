@@ -6,13 +6,11 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 14:23:17 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/18 11:08:06 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/19 12:05:52 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // functions to handle exit codes, errors, no env...etc
-// and exit without leaks, includes functions to free specific data structure
-//(char ** or char ***) and to free the err struct
 
 #include "../includes/libft.h"
 #include "../includes_bonus/pipex_bonus.h"
@@ -41,63 +39,4 @@ void	error_exit(int result, int error_return, char *error_msg, t_err *err)
 	}
 	free(error_msg);
 	return ;
-}
-
-void	free_close(t_err *err)
-{
-	if (err->fd[1] != -1)
-		close(err->fd[1]);
-	if (err->fd[0] != -1)
-		close(err->fd[0]);
-	if (err->previous_fd != -1)
-		close(err->previous_fd);
-	free_cmds(err);
-	free(err);
-}
-//plus tard
-void	free_heredoc(t_err *err, char *current_line)
-{
-	free_close(err);
-	if (unlink("heredoc_tmp") == -1)
-	{
-		printf("error de unlink\n");
-		return ;
-	}
-	free(current_line);
-}
-
-void	free_cmds(t_err *err)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	if (err->cmds)
-	{
-		while (err->cmds[i])
-		{
-			j = 0;
-			while (err->cmds[i][j])
-			{
-				free(err->cmds[i][j]);
-				j++;
-			}
-			free(err->cmds[i]);
-			i++;
-		}
-		free(err->cmds);
-	}
-}
-
-void	free_path(char **paths)
-{
-	int	i;
-
-	i = 0;
-	while (paths[i])
-	{
-		free(paths[i]);
-		i++;
-	}
-	free(paths);
 }

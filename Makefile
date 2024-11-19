@@ -6,7 +6,7 @@
 #    By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/14 14:27:04 by aubertra          #+#    #+#              #
-#    Updated: 2024/11/18 13:16:01 by aubertra         ###   ########.fr        #
+#    Updated: 2024/11/19 12:17:15 by aubertra         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ SRCS_BONUS = main_bonus.c\
 	 		handle_errors_bonus.c\
 	 		parsing_bonus.c\
 	 		processes_bonus.c\
-			handle_heredoc.c\
+			free_close.c\
 
 NAME= pipex
 
