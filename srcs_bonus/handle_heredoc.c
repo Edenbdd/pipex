@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 12:46:19 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/18 17:14:07 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/19 08:56:54 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,13 @@ int heredoc_exec(char **argv, char **env, t_err *err)
 	write(err->previous_fd, current_line, ft_strlen(current_line));
 	close(err->previous_fd);
     err->previous_fd = open("heredoc_tmp", O_RDWR | O_CREAT, 0644);
-    error_exit(pipe(err->fd), -1, error_msg(err, "pipe failed "), err);
 	err->heredoc = 1;
 	//
     err->cmds = get_cmds(argv, 6, err, 3);
 	id = children_generator(argv, env, 6, err);
 	free(current_line);
 	free_close(err);
-    unlink("heredoc_tmp");
+	unlink("heredoc_tmp");
 	return (waiting(id));
 }
 

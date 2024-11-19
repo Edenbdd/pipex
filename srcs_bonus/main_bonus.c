@@ -68,18 +68,16 @@ int	children_generator(char **argv, char **env, int argc, t_err *err)
 		stop = argc - 2;
 	while (i <= stop)
 	{
-		err->cmd_index = i - 2;
 		error_exit(pipe(err->fd), -1, error_msg(err, "pipe failed "), err);
 		id = fork();
-		printf("%d\n", id);
 		error_exit(id, -1, error_msg(err, "fork failed "), err);
 		if (id == 0 && !err->heredoc)
 			child_process(err, argv[1], argv[argc - 1], env);
 		else if (id == 0 && err->heredoc)
 			heredoc_child_process(err, argv[argc - 1], env);
-		err->cmd_index = 1;
+		err->cmd_index++;
 		close(err->fd[1]);
-		if (err->cmd_index > 1)
+		if (err->cmd_index > 0) //!! l index des cmd doit commencer a 0 hors il etait a 1 ici donc pb ?
 			close(err->previous_fd);
 		err->previous_fd = err->fd[0];
 		i++;

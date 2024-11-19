@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 11:48:25 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/18 17:08:24 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/19 09:05:31 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ void heredoc_child_process(t_err *err, char *outfile, char **env)
         dup2(err->fd[0], STDIN_FILENO);
     close(err->previous_fd);
     close(err->fd[0]);
+	path = handle_cmd(err->cmds[err->cmd_index][0], env, err);
+	printf("path %s cmds is %s\n", path, err->cmds[err->cmd_index][0]);
     if (err->cmd_index == 1)
     {
         fd_out = open(outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
@@ -68,7 +70,6 @@ void heredoc_child_process(t_err *err, char *outfile, char **env)
         dup2(err->fd[1], STDOUT_FILENO);
         close(err->fd[1]);
     }
-    path = handle_cmd(err->cmds[err->cmd_index][0], env, err);
     if (execve(path, err->cmds[err->cmd_index], env))
     {
         free(path);
