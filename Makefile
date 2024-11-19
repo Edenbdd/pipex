@@ -6,7 +6,7 @@
 #    By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/14 14:27:04 by aubertra          #+#    #+#              #
-#    Updated: 2024/11/19 12:17:15 by aubertra         ###   ########.fr        #
+#    Updated: 2024/11/19 14:24:44 by aubertra         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ OBJS= $(SRCS:.c=.o)
 OBJS_BONUS= $(SRCS_BONUS:.c=.o)
 
 CC= cc
-CFLAGS = -Wall -Werror -Wextra -g3
+CFLAGS = -Wall -Werror -Wextra -g3 -I libft/
 
 all: $(NAME)
 
@@ -51,6 +51,8 @@ fclean: clean
 		rm -f $(NAME)
 		make fclean -C libft
 
-re: fclean all
+re:
+	make fclean
+	make all
 
 .PHONY: fclean clean re bonus

@@ -12,7 +12,7 @@
 
 //Main + helper functions
 
-#include "../includes/libft.h"
+#include "libft.h"
 #include "../includes_bonus/pipex_bonus.h"
 
 void	init(t_err *err, int argc)
@@ -33,11 +33,16 @@ void	create_doc(char **argv, t_err *err)
 
     err->previous_fd = open("heredoc_tmp", O_RDWR | O_CREAT | O_TRUNC, 0644);
     error_exit(err->previous_fd, -1, error_msg(err, "creation of heredoc_tmp failed "), err);
-    current_line = get_next_line(STDIN_FILENO, argv[2]);
-	write(err->previous_fd, current_line, ft_strlen(current_line));
+	current_line = get_next_line(STDIN_FILENO);
+	while (ft_strncmp(current_line, argv[2], ft_strlen(current_line) - 1))
+	{
+		free(current_line);
+   		current_line = get_next_line(STDIN_FILENO); 
+		write(err->previous_fd, current_line, ft_strlen(current_line));
+	}
 	free(current_line);
 	close(err->previous_fd);
-    err->previous_fd = open("heredoc_tmp", O_RDWR | O_CREAT, 0644);
+    err->previous_fd = open("heredoc_tmp ", O_RDWR | O_CREAT, 0644);
 	err->heredoc = 1;
 	err->first_cmd = 3;
 	err->cmd_nb -= 1;
@@ -51,14 +56,16 @@ int	main(int argc, char **argv, char **env)
 	if (!env[0])
 		env = NULL;
 	if (argc < 5)
+	{
+		ft_putstr_fd("./pipex infile cmd cmd outfile\n", 2);
 		return (1);
+	}
 	init(&err, argc);
 	if (!ft_strncmp(argv[1], "here_doc", 8))
 		create_doc(argv, &err);
 	check_access(argv[1], argv[argc - 1], &err);
 	err.cmds = get_cmds(argv, argc, &err);
 	id = children_generator(argv, env, argc, &err);
-	printf("lets print this process id [%d]\n", getpid());
 	free_close(&err);
 	return (waiting(id));
 }

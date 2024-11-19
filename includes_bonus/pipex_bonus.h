@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 09:09:05 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/19 12:12:51 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/19 18:58:04 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ char					*test_path(char **paths, char *cmd, t_err *err);
 char					*join_path(char *path, char *cmd, t_err *err,
 							char **paths);
 char					*error_msg(t_err *err, char *msg);
+char					*ft_getenv(char **env);
 
 char					***get_cmds(char **argv, int argc, t_err *err);
 

@@ -6,13 +6,13 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 09:12:10 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/19 12:06:29 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/19 18:22:37 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // For now here is parsing functions
 
-#include "../includes/libft.h"
+#include "libft.h"
 #include "../includes_bonus/pipex_bonus.h"
 
 char	***get_cmds(char **argv, int argc, t_err *err)

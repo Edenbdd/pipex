@@ -6,14 +6,14 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 09:12:10 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/14 14:48:01 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/19 16:40:30 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // For now here is parsing functions + main utils function used to shortened
 // the main such as error_exit and waiting
 
-#include "../includes/libft.h"
+#include "libft.h"
 #include "../includes/pipex.h"
 
 char	***get_cmds(char **argv, int argc, t_err *err)
@@ -25,12 +25,12 @@ char	***get_cmds(char **argv, int argc, t_err *err)
 	j = 0;
 	err->cmds = ft_calloc(sizeof(char **), argc - 1);
 	if (!err->cmds)
-		error_exit(1, 1, "cmds error 1", err);
+		error_exit(1, 1, "cmds error 1 : ", err);
 	while (i < argc - 1)
 	{
 		err->cmds[j] = ft_split(argv[i], 32);
 		if (!err->cmds)
-			error_exit(1, 1, "cmds error", err);
+			error_exit(1, 1, "cmds error : ", err);
 		i++;
 		j++;
 	}
@@ -40,10 +40,10 @@ char	***get_cmds(char **argv, int argc, t_err *err)
 
 void	check_access(char *infile, char *outfile, t_err *err)
 {
-	error_exit(access(infile, F_OK), -1, "infile", err);
-	error_exit(access(infile, R_OK), -1, "infile", err);
+	error_exit(access(infile, F_OK), -1, "infile : ", err);
+	error_exit(access(infile, R_OK), -1, "infile : ", err);
 	if (!access(outfile, F_OK))
-		error_exit(access(outfile, W_OK), -1, "outfile", err);
+		error_exit(access(outfile, W_OK), -1, "outfile : ", err);
 }
 
 int	waiting(int id1, int id2)

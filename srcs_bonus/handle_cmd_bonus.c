@@ -6,15 +6,31 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:42:26 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/19 12:19:37 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/19 19:00:42 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Functions to find the path associated with each
 // and testing their access
 
-#include "../includes/libft.h"
+#include "libft.h"
 #include "../includes_bonus/pipex_bonus.h"
+
+char	*ft_getenv(char **env)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 5;
+	while (env[i])
+	{
+		if (!ft_strncmp(env[i], "PATH=", 5))
+			break;
+		i++;
+	}
+	return (&env[i][j]);
+}
 
 char	*handle_cmd(char *cmd, char **env, t_err *err)
 {
@@ -24,14 +40,14 @@ char	*handle_cmd(char *cmd, char **env, t_err *err)
 	if (!env)
 		return (absolute_path(cmd, err));
 	right_path = NULL;
-	paths = ft_split(getenv("PATH"), ':');
+	paths = ft_split(ft_getenv(env), ':');
 	if (!paths)
 		error_exit(1, 1, error_msg(err, "paths in handle cmd "), err);
-	right_path = test_path(paths, cmd, err);
+	right_path = absolute_path(cmd, err);
 	free(paths);
 	if (!right_path)
 	{
-		right_path = absolute_path(cmd, err);
+		right_path = test_path(paths, cmd, err);
 		if (!right_path)
 			error_exit(1, 1, error_msg(err, "no_right found in handle cmd "), err);
 	}
@@ -85,13 +101,6 @@ char	*test_path(char **paths, char *cmd, t_err *err)
 		i++;
 	}
 	return (right_path);
-}
-
-void	triple_free(char *path, char *tmp, char *to_test)
-{
-	free(path);
-	free(tmp);
-	free(to_test);
 }
 
 char	*absolute_path(char *cmd, t_err *err)

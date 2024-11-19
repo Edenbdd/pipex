@@ -6,11 +6,11 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 10:36:05 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/16 15:29:47 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/19 16:34:35 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./get_next_line.h"
+#include "get_next_line.h"
 
 int	gnl_strlen(char *str)
 {
@@ -22,22 +22,17 @@ int	gnl_strlen(char *str)
 	return (i);
 }
 
-char	*gnl_substrchr(char *s, char *to_find)
+char	*gnl_strchr(char *s, int c)
 {
+	int	len;
 	int	i;
-	int	j;
 
 	i = 0;
-	j = 0;
-	if (!to_find)
-		return (s);
-	while (s[i])
+	len = gnl_strlen((char *)s) + 1;
+	while (i < len)
 	{
-		j = 0;
-		while (s[i + j]&& to_find[j] && s[i + j] == to_find[j])
-			j++;
-		if (j == gnl_strlen(to_find))
-			return (&s[i]);
+		if (s[i] == (char)c)
+			return ((char *)s + i + 1);
 		i++;
 	}
 	return (NULL);

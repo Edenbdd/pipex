@@ -6,14 +6,14 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 11:48:25 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/19 12:38:51 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/19 18:22:00 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Creating and executing children
 
 #include "../includes_bonus/pipex_bonus.h"
-#include "../includes/libft.h"
+#include "libft.h"
 
 int	children_generator(char **argv, char **env, int argc, t_err *err)
 {
@@ -37,7 +37,7 @@ int	children_generator(char **argv, char **env, int argc, t_err *err)
 		close(err->fd[1]);
 		if (err->cmd_index > 1)
 			close(err->previous_fd);
-		else if (err->cmd_index == err->cmd_nb)
+		else if (err->cmd_index == err->cmd_nb && err->heredoc)
 			close(err->previous_fd);
 		err->previous_fd = err->fd[0];
 		i++;
@@ -69,7 +69,7 @@ void	child_process(t_err *err, char *infile, char *outfile, char **env)
 	closing(err);
 	if (execve(path, err->cmds[err->cmd_index], env))
 	{
-		free(path);
+		//free(path);
 		error_exit(-1, -1, error_msg(err, "exexcve failed "), err);
 	}
 }

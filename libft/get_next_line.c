@@ -6,96 +6,104 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 10:12:40 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/18 10:39:51 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/19 18:30:54 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./get_next_line.h"
-#include "./libft.h"
 
-char *get_next_line(int fd, char *limiter)
+char	*get_next_line(int fd)
 {
-    static char *line;      // Holds leftover text
-    char        *buffer;    // Temporary buffer for reading
+	static char	*line;
+	char		*buffer;
+	char		*adjusted_line;
 
-    if (fd < 0 || BUFFER_SIZE <= 0 || !limiter)
-        return (NULL);
-    buffer = gnl_calloc(BUFFER_SIZE + 1, sizeof(char));
-    if (!buffer)
-        return (NULL);
-    // Read and fill the input buffer
-    line = filled_line(fd, buffer, line, limiter);
-    if (!line) 
+	if (fd < 0 || fd > 1024 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+		return (NULL);
+	buffer = gnl_calloc(sizeof(char), BUFFER_SIZE + 1);
+	if (!buffer)
+		return (NULL);
+	line = filled_line(fd, buffer, line);
+	adjusted_line = adjust_line(line);
+	if (!adjusted_line)
 	{
-        free(buffer);
-        return (NULL);
-    }
-    // Update `line` to store leftover content before limiter
-    line = left_char(line, limiter);
-    if (!line || !line[0])
-    {
-        free(line);
-        line = NULL;
-    }
-    return (line);
-}
-
-char *filled_line(int fd, char *buffer, char *line, char *limiter)
-{
-    int val_read;
-
-    if (!line)
-        line = gnl_calloc(BUFFER_SIZE + 1, sizeof(char));
-    if (!line)
-        return (free(buffer), NULL);
-
-    val_read = 1;
-    while (val_read && !gnl_substrchr(line, limiter))
-    {
-        val_read = read(fd, buffer, BUFFER_SIZE);
-        if (val_read == -1)
-            return (free(buffer), free(line), NULL);
-        if (val_read == 0)
-            break;
-        buffer[val_read] = '\0';
-        line = gnl_strjoin(line, buffer);
-        if (!line)
-            return (free(buffer), NULL);
-    }
-
-    free(buffer);
-    return (line);
-}
-
-char *left_char(char *line, char *limiter)
-{
-    char *end_of_line;
-    char *remaining_line;
-    int len_before_limiter;
-	int i = 0;
-    // Find the position of the limiter in the line
-    end_of_line = gnl_substrchr(line, limiter);
-    if (!end_of_line)
-        return (free(line), NULL); // No limiter found, return NULL
-    // Calculate length before the limiter
-    len_before_limiter = end_of_line - line;
-    // Allocate memory for the string before the limiter (excluding the limiter itself)
-    remaining_line = gnl_calloc(len_before_limiter + 1, sizeof(char));
-    if (!remaining_line)
-        return (free(line), NULL);
-    // Copy everything before the limiter into remaining_line
-    while ( i < len_before_limiter)
-	{
-        remaining_line[i] = line[i];
-		i++;
+		free(line);
+		line = NULL;
+		return (NULL);
 	}
-	remaining_line[i] = '\0';
-    // Free the original line as it is no longer needed
-    free(line);
-    return (remaining_line);
+	line = left_char(line);
+	if (!line || !line[0])
+	{
+		free(line);
+		line = NULL;
+	}
+	return (adjusted_line);
 }
 
+char	*filled_line(int fd, char *buffer, char *line)
+{
+	int		val_read;
 
+	if (!line)
+		line = gnl_calloc(sizeof(char), BUFFER_SIZE + 1);
+	if (!line)
+		return (free(buffer), NULL);
+	val_read = 1;
+	while (val_read && !gnl_strchr(buffer, '\n'))
+	{
+		val_read = read(fd, buffer, BUFFER_SIZE);
+		if (val_read == -1)
+			return (free(buffer), free(line), NULL);
+		if (val_read == 0)
+			break ;
+		buffer[val_read] = '\0';
+		line = gnl_strjoin(line, buffer);
+	}
+	return (free(buffer), line);
+}
+
+char	*adjust_line(char *line)
+{
+	int		i;
+	int		j;
+	char	*temp;
+
+	i = 0;
+	j = 0;
+	if (!line || !line[0])
+		return (NULL);
+	while (line[i] && line[i] != '\n')
+		i++;
+	temp = gnl_calloc(sizeof(char), (i + 2));
+	if (!temp)
+		return (NULL);
+	while (j <= i)
+	{
+		temp[j] = line[j];
+		j++;
+	}
+	temp[j] = '\0';
+	return (temp);
+}
+
+char	*left_char(char *line)
+{
+	char	*temp;
+	char	*from_n;
+	int		i;
+
+	i = 0;
+	while (line[i] != '\n' && line[i] != '\0')
+		i++;
+	if (line[i] == '\0' || line[1] == '\0')
+		return (free(line), NULL);
+	from_n = gnl_strchr(line, '\n');
+	if (from_n)
+		temp = gnl_strdup(from_n);
+	else
+		temp = gnl_strdup(line);
+	return (free(line), temp);
+}
 /*
 int main(void)
 {

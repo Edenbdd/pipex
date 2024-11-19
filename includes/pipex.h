@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 09:09:05 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/14 08:36:48 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/19 18:58:27 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,15 @@ void					free_path(char **paths);
 
 int						waiting(int id1, int id2);
 
-char					*absolute_path(char *cmd, t_err *err, char *err_msg);
+char					*absolute_path(char *cmd, t_err *err, 
+							char *err_msg, char **path);
 char					*handle_cmd(char *cmd, char **env, t_err *err,
 							char *err_msg);
 char					*test_path(char **paths, char *cmd,
 							t_err *err, char *err_msg);
 char					*join_path(char *path, char *cmd, t_err *err,
 							char **paths);
+char					*ft_getenv(char **env);
 
 char					***get_cmds(char **argv, int argc, t_err *err);
 

@@ -12,7 +12,7 @@
 
 // Only the main here
 
-#include "../includes/libft.h"
+#include "libft.h"
 #include "../includes/pipex.h"
 
 t_err	*init(void)
@@ -40,17 +40,20 @@ int	main(int argc, char **argv, char **env)
 	if (!env[0])
 		env = NULL;
 	if (argc != 5)
+	{
+		ft_putstr_fd("./pipex infile cmd cmd outfile\n", 2);
 		return (1);
+	}
 	err = init();
 	err->cmds = get_cmds(argv, argc, err);
 	check_access(argv[1], argv[argc - 1], err);
-	error_exit(pipe(err->fd), -1, "pipe", err);
+	error_exit(pipe(err->fd), -1, "pipe : ", err);
 	id = fork();
-	error_exit(id, -1, "first fork", err);
+	error_exit(id, -1, "first fork : ", err);
 	if (id == 0)
 		first_child(err, argv[1], env);
 	id2 = fork();
-	error_exit(id, -1, "second fork", err);
+	error_exit(id, -1, "second fork : ", err);
 	if (id2 == 0)
 		sec_child(err, argv[argc - 1], env);
 	free_close(err);
