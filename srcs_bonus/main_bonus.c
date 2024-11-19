@@ -60,8 +60,6 @@ int	main(int argc, char **argv, char **env)
 	id = children_generator(argv, env, argc, &err);
 	printf("lets print this process id [%d]\n", getpid());
 	free_close(&err);
-	close(err.previous_fd);
-	printf("previous %d\n", err.previous_fd);
 	return (waiting(id));
 }
 

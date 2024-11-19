@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 11:54:10 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/19 12:33:57 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/19 12:41:27 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	closing(t_err *err)
 void	free_close(t_err *err)
 {
 	closing(err);
-	if (access("heredoc_tmp", F_OK))
+	if (!access("heredoc_tmp", F_OK))
 	{
 		if (unlink("heredoc_tmp") == -1)
 			perror("heredoc_tmp unlink error ");
