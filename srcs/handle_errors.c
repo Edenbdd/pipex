@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 14:23:17 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/19 18:52:05 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/20 11:59:57 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,12 +81,4 @@ void	free_path(char **paths)
 		i++;
 	}
 	free(paths);
-}
-
-void	triple_free(char *path, char *tmp, char *to_test)
-{
-	(void)path;
-	// free(path);
-	free(tmp);
-	free(to_test);
 }

@@ -10,10 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-//Main + helper functions
+// Main + helper functions
 
-#include "libft.h"
 #include "../includes_bonus/pipex_bonus.h"
+#include "libft.h"
 
 void	init(t_err *err, int argc)
 {
@@ -23,50 +23,59 @@ void	init(t_err *err, int argc)
 	err->fd[0] = -1;
 	err->fd[1] = -1;
 	err->previous_fd = -1;
-	err->cmd_nb =  argc - 4;
+	err->cmd_nb = argc - 4;
 	err->cmds = NULL;
 }
 
-void	create_doc(char **argv, t_err *err)
+static void	check_heredoc(t_err *err)
 {
-	char *current_line;
 	if (!access("heredoc_tmp", F_OK))
 	{
 		if (access("heredoc_tmp", R_OK | W_OK))
 		{
-			error_exit(-1, -1, error_msg(err, 
-			"heredoc_tmp already exists without read & write permissions : "), err);
+			error_exit(-1, -1, error_msg(err,
+					"heredoc_tmp already exists"
+					" without read & write permissions : "),
+				err);
 		}
-	}	
+	}
+}
+
+void	create_doc(char **argv, t_err *err)
+{
+	char	*current_line;
+
+	check_heredoc(err);
 	err->previous_fd = open("heredoc_tmp", O_RDWR | O_CREAT | O_TRUNC, 0644);
-    error_exit(err->previous_fd, 4, error_msg(err, "creation of heredoc_tmp failed "), err);
+	error_exit(err->previous_fd, 4, error_msg(err,
+			"creation of heredoc_tmp failed "), err);
 	while (1)
 	{
-   		current_line = get_next_line(STDIN_FILENO); 
+		current_line = get_next_line(STDIN_FILENO);
 		if (!ft_strncmp(current_line, argv[2], ft_strlen(current_line) - 1))
 		{
 			free(current_line);
-			break;
+			break ;
 		}
 		write(err->previous_fd, current_line, ft_strlen(current_line));
 		free(current_line);
 	}
 	close(err->previous_fd);
-    err->previous_fd = open("heredoc_tmp", O_RDWR | O_CREAT, 0644);
+	err->previous_fd = open("heredoc_tmp", O_RDWR | O_CREAT, 0644);
 	err->heredoc = 1;
 	err->first_cmd = 3;
 	err->cmd_nb -= 1;
 }
 
-
 int	main(int argc, char **argv, char **env)
 {
 	t_err	err;
 	int		id;
-	
+
 	if (!env[0])
 		env = NULL;
-	if ((argc < 6 && !ft_strncmp(argv[1], "here_doc", ft_strlen(argv[1]) + 1)) || argc < 5)
+	if ((argc < 6 && !ft_strncmp(argv[1], "here_doc", ft_strlen(argv[1]) + 1))
+		|| argc < 5)
 	{
 		ft_putstr_fd("./pipex infile cmd cmd cmd outfile\n", 2);
 		ft_putstr_fd("./pipex here_doc lim cmd cmd outfile\n", 2);
@@ -93,7 +102,7 @@ int	waiting(int id_last)
 		{
 			if (WIFEXITED(status))
 				retcode = WEXITSTATUS(status);
-			if (WIFSIGNALED(status)) 
+			if (WIFSIGNALED(status))
 			{
 				retcode = WTERMSIG(status);
 				if (retcode != 131)

@@ -6,15 +6,15 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:42:26 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/20 11:45:14 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/20 11:57:33 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// Functions to find the path associated with each
+// Functions to find the path associated with each cmd
 // and testing their access
 
-#include "libft.h"
 #include "../includes/pipex.h"
+#include "libft.h"
 
 char	*ft_getenv(char **env)
 {
@@ -26,7 +26,7 @@ char	*ft_getenv(char **env)
 	while (env[i])
 	{
 		if (!ft_strncmp(env[i], "PATH=", 5))
-			break;
+			break ;
 		i++;
 	}
 	return (&env[i][j]);
@@ -36,11 +36,11 @@ char	*handle_cmd(char *cmd, char **env, t_err *err, char *err_msg)
 {
 	char	**paths;
 	char	*right_path;
-	
+
 	if (!cmd)
 		error_exit(1, 1, "empty cmd ", err);
 	if (!env || cmd[0] == '.' || cmd[0] == '/')
-	 	return (absolute_path(cmd, err, err_msg));
+		return (absolute_path(cmd, err, err_msg));
 	paths = ft_split(ft_getenv(env), ':');
 	if (!paths)
 		error_exit(1, 1, "paths in handle cmd :", err);
@@ -77,8 +77,8 @@ char	*test_path(char **paths, char *cmd, t_err *err, char *err_msg)
 	int		i;
 	char	*to_test;
 	char	*right_path;
-	(void)err_msg;
 
+	(void)err_msg;
 	i = 0;
 	right_path = NULL;
 	while (paths[i])

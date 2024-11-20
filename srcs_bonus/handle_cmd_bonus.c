@@ -6,15 +6,15 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:42:26 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/20 11:45:12 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/20 12:03:00 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Functions to find the path associated with each
 // and testing their access
 
-#include "libft.h"
 #include "../includes_bonus/pipex_bonus.h"
+#include "libft.h"
 
 char	*ft_getenv(char **env)
 {
@@ -26,7 +26,7 @@ char	*ft_getenv(char **env)
 	while (env[i])
 	{
 		if (!ft_strncmp(env[i], "PATH=", 5))
-			break;
+			break ;
 		i++;
 	}
 	return (&env[i][j]);
@@ -40,14 +40,14 @@ char	*handle_cmd(char *cmd, char **env, t_err *err)
 	if (!cmd)
 		error_exit(1, 1, error_msg(err, "empty cmd "), err);
 	if (!env || cmd[0] == '.' || cmd[0] == '/')
-	 	return (absolute_path(cmd, err));
+		return (absolute_path(cmd, err));
 	paths = ft_split(ft_getenv(env), ':');
 	if (!paths)
 		error_exit(1, 1, "paths in handle cmd ", err);
 	right_path = test_path(paths, cmd, err);
 	free_path(paths);
 	if (!right_path)
-		error_exit(1, 1, error_msg(err, "cmd path cannot be found "), err);;
+		error_exit(1, 1, error_msg(err, "cmd path cannot be found "), err);
 	return (right_path);
 }
 
@@ -108,7 +108,8 @@ char	*absolute_path(char *cmd, t_err *err)
 			return (cmd);
 		else
 		{
-			error_exit(1, 1, error_msg(err, "absolute/relative path can't be executed "), err);
+			error_exit(1, 1, error_msg(err,
+					"absolute/relative path can't be executed "), err);
 			return (NULL);
 		}
 	}
