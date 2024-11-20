@@ -44,16 +44,19 @@ static void	check_heredoc(t_err *err)
 void	create_doc(char **argv, t_err *err)
 {
 	char	*current_line;
+	char	*tmp;
 
 	check_heredoc(err);
 	err->previous_fd = open("heredoc_tmp", O_RDWR | O_CREAT | O_TRUNC, 0644);
-	error_exit(err->previous_fd, 4, error_msg(err,
-			"creation of heredoc_tmp failed "), err);
+	error_exit(err->previous_fd, 4, error_msg(err, "heredoc_tmp failed "), err);
+	tmp = ft_strjoin(argv[2], "\n");
 	while (1)
 	{
 		current_line = get_next_line(STDIN_FILENO);
-		if (!ft_strncmp(current_line, argv[2], ft_strlen(current_line) - 1))
+		if (!current_line
+			|| !ft_strncmp(current_line, tmp, ft_strlen(current_line)))
 		{
+			free(tmp);
 			free(current_line);
 			break ;
 		}
@@ -74,8 +77,13 @@ int	main(int argc, char **argv, char **env)
 
 	if (!env[0])
 		env = NULL;
-	if ((argc < 6 && !ft_strncmp(argv[1], "here_doc", ft_strlen(argv[1]) + 1))
-		|| argc < 5)
+	if (argc < 5)
+	{
+		ft_putstr_fd("./pipex infile cmd cmd cmd outfile\n", 2);
+		ft_putstr_fd("./pipex here_doc lim cmd cmd outfile\n", 2);
+		return (1);
+	}
+	if (argc < 6 && !ft_strncmp(argv[1], "here_doc", ft_strlen(argv[1])))
 	{
 		ft_putstr_fd("./pipex infile cmd cmd cmd outfile\n", 2);
 		ft_putstr_fd("./pipex here_doc lim cmd cmd outfile\n", 2);

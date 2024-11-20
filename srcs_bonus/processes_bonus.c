@@ -6,14 +6,11 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 11:48:25 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/20 12:16:29 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/20 14:08:20 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Creating and executing children
-
-/*else if (err->cmd_index == err->cmd_nb && err->heredoc)
-	close(err->previous_fd);*/
 
 #include "../includes_bonus/pipex_bonus.h"
 #include "libft.h"
@@ -38,7 +35,8 @@ int	children_generator(char **argv, char **env, int argc, t_err *err)
 			child_process(err, argv[1], argv[argc - 1], env);
 		err->cmd_index++;
 		close(err->fd[1]);
-		if (err->cmd_index > 1)
+		if (err->cmd_index > 1
+			|| (err->cmd_index == err->cmd_nb && err->heredoc))
 			close(err->previous_fd);
 		err->previous_fd = err->fd[0];
 		i++;
