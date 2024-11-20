@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:42:26 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/20 12:03:00 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/20 14:58:00 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ char	*handle_cmd(char *cmd, char **env, t_err *err)
 	char	**paths;
 	char	*right_path;
 
-	if (!cmd)
+	if (!cmd || !cmd[0])
 		error_exit(1, 1, error_msg(err, "empty cmd "), err);
 	if (!env || cmd[0] == '.' || cmd[0] == '/')
 		return (absolute_path(cmd, err));

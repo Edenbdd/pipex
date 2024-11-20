@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 09:12:10 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/20 12:01:32 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/20 14:58:25 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,20 @@
 #include "libft.h"
 #include "../includes_bonus/pipex_bonus.h"
 
+static int	only_space(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] != 32)
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 char	***get_cmds(char **argv, int argc, t_err *err)
 {
 	int	i;
@@ -22,9 +36,16 @@ char	***get_cmds(char **argv, int argc, t_err *err)
 
 	i = err->first_cmd;
 	j = 0;
+	while (i < argc - 1)
+	{
+		if (!argv[i][0] || only_space(argv[i]))
+			error_exit(1, 1, error_msg(err, "there is an empty cmd "), err);
+		i++;
+	}
 	err->cmds = ft_calloc(sizeof(char **), argc - 1);
 	if (!err->cmds)
 		error_exit(1, 1, error_msg(err, "ft_calloc fails in get_cmds "), err);
+	i = err->first_cmd;
 	while (i < argc - 1)
 	{
 		err->cmds[j] = ft_split(argv[i], 32);
