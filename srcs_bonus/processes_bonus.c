@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 11:48:25 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/19 18:22:00 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/20 11:45:38 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	children_generator(char **argv, char **env, int argc, t_err *err)
 			child_process(err, argv[1], argv[argc - 1], env);
 		err->cmd_index++;
 		close(err->fd[1]);
-		if (err->cmd_index > 1)
+		if (err->cmd_index > 1) //&& !err->heredoc ?
 			close(err->previous_fd);
 		else if (err->cmd_index == err->cmd_nb && err->heredoc)
 			close(err->previous_fd);
@@ -45,7 +45,7 @@ int	children_generator(char **argv, char **env, int argc, t_err *err)
 	return (id);
 }
 
-//couper une ligne pour la norme (maybe externaliser les closes en divisant free_close en 2 ?
+
 void	child_process(t_err *err, char *infile, char *outfile, char **env)
 {
 	char	*path;
@@ -68,8 +68,5 @@ void	child_process(t_err *err, char *infile, char *outfile, char **env)
 	path = handle_cmd(err->cmds[err->cmd_index][0], env, err);
 	closing(err);
 	if (execve(path, err->cmds[err->cmd_index], env))
-	{
-		//free(path);
 		error_exit(-1, -1, error_msg(err, "exexcve failed "), err);
-	}
 }

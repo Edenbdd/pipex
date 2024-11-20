@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 09:09:05 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/20 09:06:50 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/20 11:46:32 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ void					sec_child(t_err *err, char *outfile, char **env);
 void					free_close(t_err *err);
 void					error_exit(int result, int error_return,
 							char *error_msg, t_err *err);
-void					triple_free(char *path, char *tmp, char *to_test);
 void					free_cmds(t_err *err);
 void					free_path(char **paths);
 

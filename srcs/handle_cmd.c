@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:42:26 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/20 09:07:50 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/20 11:45:14 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ char	*handle_cmd(char *cmd, char **env, t_err *err, char *err_msg)
 		error_exit(1, 1, "paths in handle cmd :", err);
 	right_path = test_path(paths, cmd, err, err_msg);
 	free_path(paths);
+	if (!right_path)
+		error_exit(1, 1, err_msg, err);
 	return (right_path);
 }
 
@@ -93,7 +95,7 @@ char	*test_path(char **paths, char *cmd, t_err *err, char *err_msg)
 			else
 				right_path = NULL;
 		}
-		triple_free(paths[i], to_test, NULL);
+		free(to_test);
 		i++;
 	}
 	return (right_path);

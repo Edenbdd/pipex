@@ -6,7 +6,7 @@
 #    By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/14 14:27:04 by aubertra          #+#    #+#              #
-#    Updated: 2024/11/19 14:24:44 by aubertra         ###   ########.fr        #
+#    Updated: 2024/11/20 11:14:09 by aubertra         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,15 +23,21 @@ SRCS_BONUS = main_bonus.c\
 	 		processes_bonus.c\
 			free_close.c\
 
+OBJ_DIR= OBJ
+
 NAME= pipex
 
 OBJS= $(SRCS:.c=.o)
 OBJS_BONUS= $(SRCS_BONUS:.c=.o)
 
 CC= cc
+
 CFLAGS = -Wall -Werror -Wextra -g3 -I libft/
 
 all: $(NAME)
+
+$(OBJ_DIR):
+	mkdir $(OBJ_DIR)
 
 bonus: $(addprefix srcs_bonus/,$(OBJS_BONUS))
 		make -C libft
@@ -40,6 +46,7 @@ bonus: $(addprefix srcs_bonus/,$(OBJS_BONUS))
 $(NAME): $(addprefix srcs/,$(OBJS))
 		make -C libft
 		$(CC) $(CFLAGS) $^ -L libft -l ft -o $(NAME)
+
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 

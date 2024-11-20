@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:42:26 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/20 09:08:13 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/20 11:45:12 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,11 @@ char	*handle_cmd(char *cmd, char **env, t_err *err)
 	 	return (absolute_path(cmd, err));
 	paths = ft_split(ft_getenv(env), ':');
 	if (!paths)
-		error_exit(1, 1, "paths in handle cmd :", err);
+		error_exit(1, 1, "paths in handle cmd ", err);
 	right_path = test_path(paths, cmd, err);
 	free_path(paths);
+	if (!right_path)
+		error_exit(1, 1, error_msg(err, "cmd path cannot be found "), err);;
 	return (right_path);
 }
 
@@ -92,7 +94,7 @@ char	*test_path(char **paths, char *cmd, t_err *err)
 			else
 				right_path = NULL;
 		}
-		triple_free(paths[i], to_test, NULL);
+		free(to_test);
 		i++;
 	}
 	return (right_path);
