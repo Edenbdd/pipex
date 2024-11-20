@@ -6,7 +6,7 @@
 /*   By: aubertra <aubertra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 13:42:26 by aubertra          #+#    #+#             */
-/*   Updated: 2024/11/19 19:00:42 by aubertra         ###   ########.fr       */
+/*   Updated: 2024/11/20 09:08:13 by aubertra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,20 +37,15 @@ char	*handle_cmd(char *cmd, char **env, t_err *err)
 	char	**paths;
 	char	*right_path;
 
-	if (!env)
-		return (absolute_path(cmd, err));
-	right_path = NULL;
+	if (!cmd)
+		error_exit(1, 1, error_msg(err, "empty cmd "), err);
+	if (!env || cmd[0] == '.' || cmd[0] == '/')
+	 	return (absolute_path(cmd, err));
 	paths = ft_split(ft_getenv(env), ':');
 	if (!paths)
-		error_exit(1, 1, error_msg(err, "paths in handle cmd "), err);
-	right_path = absolute_path(cmd, err);
-	free(paths);
-	if (!right_path)
-	{
-		right_path = test_path(paths, cmd, err);
-		if (!right_path)
-			error_exit(1, 1, error_msg(err, "no_right found in handle cmd "), err);
-	}
+		error_exit(1, 1, "paths in handle cmd :", err);
+	right_path = test_path(paths, cmd, err);
+	free_path(paths);
 	return (right_path);
 }
 
@@ -95,7 +90,7 @@ char	*test_path(char **paths, char *cmd, t_err *err)
 				right_path = ft_strdup(to_test);
 			}
 			else
-				error_exit(1, 1, error_msg(err, "cmd "), err);
+				right_path = NULL;
 		}
 		triple_free(paths[i], to_test, NULL);
 		i++;
@@ -111,13 +106,10 @@ char	*absolute_path(char *cmd, t_err *err)
 			return (cmd);
 		else
 		{
-			error_exit(-1, -1, error_msg(err, "cmd "), err);
+			error_exit(1, 1, error_msg(err, "absolute/relative path can't be executed "), err);
 			return (NULL);
 		}
 	}
 	else
-	{
-		error_exit(-1, -1, error_msg(err, "cmd "), err);
 		return (NULL);
-	}
 }
